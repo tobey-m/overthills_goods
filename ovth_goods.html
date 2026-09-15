@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OVERTHILL — GOODS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent: #d6cbb8;
+            --text-main: #f4f4f0;
+            --text-muted: #71717a;
+            --glow: rgba(214, 203, 184, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            background-image:
+                radial-gradient(circle at 50% 0%, rgba(214, 203, 184, 0.08) 0%, transparent 70%),
+                radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        header { text-align: center; padding: 20px 0 10px; }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid rgba(214, 203, 184, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            background: rgba(214, 203, 184, 0.05);
+        }
+
+        .logo-title {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+            text-transform: lowercase;
+            font-style: italic;
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .slogan {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .manifesto-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manifesto-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .manifesto-card p { font-size: 1.1rem; font-weight: 600; }
+        .manifesto-card span { color: var(--accent); font-style: italic; }
+
+        .section-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: -12px;
+            margin-left: 4px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .preview-box {
+            width: 100%;
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            background: #161618;
+            display: flex;
+            gap: 4px;
+        }
+
+        .img-side {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1c1b18;
+            border-radius: 6px;
+            outline: 1px solid transparent;
+            transition: outline-color 0.2s ease;
+        }
+
+        .img-side.dark { background: #141416; }
+        .img-side:hover, .img-side:focus-visible { outline-color: rgba(214, 203, 184, 0.5); }
+
+        .zoom-hint {
+            position: absolute;
+            top: 4px; right: 4px;
+            font-size: 0.9rem;
+            line-height: 1;
+            opacity: 0.6;
+        }
+
+        .side-label {
+            position: absolute;
+            bottom: 4px;
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.6);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .img-side svg, .img-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .product-card:hover .preview-box,
+        .product-card.is-open .preview-box {
+            height: 140px;
+            opacity: 1;
+            margin: 6px 0;
+        }
+
+        .product-card:hover, .product-card.is-open {
+            border-color: rgba(214, 203, 184, 0.5);
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .product-header { display: flex; justify-content: space-between; align-items: center; }
+
+        .product-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .hover-hint {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            border: 1px dashed var(--card-border);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .product-name { font-size: 0.95rem; font-weight: 700; }
+        .product-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; }
+
+        .links-group { display: flex; flex-direction: column; gap: 12px; }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-main {
+            background: var(--text-main);
+            color: #000;
+            box-shadow: 0 0 20px var(--glow);
+        }
+        .btn-main:hover { background: var(--accent); transform: scale(1.01); }
+
+        .btn-sub {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+        }
+        .btn-sub:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+
+        .arrow { font-size: 1.1rem; }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 20px 0;
+            letter-spacing: 1px;
+        }
+
+        /* ---------- Lightbox ---------- */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5,5,6,0.92);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease;
+            z-index: 100;
+            padding: 24px;
+        }
+        .lightbox-overlay.active { opacity: 1; visibility: visible; }
+
+        .lightbox-frame {
+            width: min(84vw, 380px);
+            aspect-ratio: 1;
+            background: #161618;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+            transform: scale(0.96);
+            transition: transform 0.25s ease;
+        }
+        .lightbox-overlay.active .lightbox-frame { transform: scale(1); }
+        .lightbox-frame svg, .lightbox-frame img {
+            width: 100%; height: 100%; object-fit: contain;
+        }
+
+        .lightbox-caption {
+            display: flex; align-items: center; gap: 10px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .lightbox-caption strong { color: var(--accent); }
+
+        .lightbox-close {
+            position: absolute;
+            top: 24px; right: 24px;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .lightbox-switch { display: flex; gap: 8px; }
+        .lightbox-switch button {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .lightbox-switch button.active { border-color: var(--accent); color: var(--accent); }
+
+        /* ---------- Studio (image upload) mode ---------- */
+        .studio { display: none; }
+        body.studio-on .studio { display: block; }
+
+        .studio-panel {
+            border: 1px dashed rgba(214,203,184,0.4);
+            border-radius: 16px;
+            padding: 20px;
+            background: rgba(214,203,184,0.04);
+        }
+
+        .studio-panel h2 { font-size: 0.9rem; margin-bottom: 4px; }
+        .studio-panel .note { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+
+        .slot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .slot {
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+            background: rgba(0,0,0,0.25);
+        }
+        .slot.dragover { border-color: var(--accent); background: rgba(214,203,184,0.1); }
+        .slot strong { display: block; color: var(--text-main); font-size: 0.72rem; margin-bottom: 6px; }
+        .slot input[type=file] { display: none; }
+        .slot .pick {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 5px 10px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--accent);
+        }
+        .slot .thumb { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; margin-bottom: 6px; }
+
+        .studio-actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+        .studio-actions button {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <div class="badge">First Drop / Prototype Phase</div>
+            <h1 class="logo-title">overthill</h1>
+            <p class="slogan">Where trail runs meet chill vibes</p>
+        </header>
+
+        <div class="manifesto-card">
+            <p>"to everyone who <span>run ran run</span> !"</p>
+        </div>
+
+        <span class="section-label">Current Lineup — tap a card to preview, tap a photo to enlarge</span>
+        <div class="product-grid" id="product-grid"></div>
+
+        <!-- Studio panel: hidden unless the page URL ends with ?edit=1 -->
+        <div class="studio">
+            <div class="studio-panel">
+                <h2>Studio — swap product photos</h2>
+                <p class="note">
+                    Drop a photo on a slot, or tap Choose file. Photos are saved in this browser only,
+                    so use this to check a shot before you commit to it. To publish, put the files in the
+                    img folder next to this page and fill in the PRODUCTS block at the top of the script.
+                </p>
+                <div class="slot-grid" id="slot-grid"></div>
+                <div class="studio-actions">
+                    <button id="studio-copy">Copy the config for these photos</button>
+                    <button id="studio-reset">Clear local photos</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="links-group">
+            <a href="#" class="btn btn-main">
+                <span>Pre-Order Drop 01 (590 THB)</span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://instagram.com/overthill_goods" target="_blank" class="btn btn-sub">
+                <span>Instagram @overthill_goods</span>
+                <span class="arrow">↗</span>
+            </a>
+            <a href="#" class="btn btn-sub">
+                <span>Brand Story & Lookbook</span>
+                <span class="arrow">→</span>
+            </a>
+        </div>
+
+        <footer>© OVERTHILL GOODS — CHIANG MAI</footer>
+    </div>
+
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="lightbox-close" aria-label="Close">✕</button>
+        <div class="lightbox-frame" id="lightbox-frame"></div>
+        <div class="lightbox-caption">
+            <strong id="lightbox-name"></strong>
+            <div class="lightbox-switch" id="lightbox-switch">
+                <button data-view="front">Front</button>
+                <button data-view="back">Back</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+/* ============================================================
+   EDIT HERE — the only block you need to touch to change photos.
+   Photos live in the img/ folder beside this file. Paths are
+   case-sensitive once the site is hosted, so they must match the
+   filenames exactly. Leave a value empty and the drawn mockup
+   shows instead.
+   ============================================================ */
+const PRODUCTS = {
+    road: {
+        tag: 'Road Edition',
+        code: 'OVTH-01',
+        desc: '"this shirt was made to ran"<br>center-back reflective',
+        dark: false,
+        frontImg: 'img/OVTH-01-FRONT.svg',
+        backImg:  'img/OVTH-01-BACK.svg'
+    },
+    trail: {
+        tag: 'Trail Edition',
+        code: 'OVTH-02',
+        desc: '"this shirt was made to trail"<br>lower-back / vest ready',
+        dark: true,
+        frontImg: 'img/OVTH-02-FRONT.svg',
+        backImg:  'img/OVTH-02-BACK.svg'
+    }
+};
+/* ========================= END EDIT ========================= */
+
+// Drawn fallbacks, used whenever a photo path is empty.
+const MOCKUP = {
+    road: {
+        front: `<svg viewBox="0 0 100 100" fill="none">
+            <path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#d6cbb8"/>
+            <ellipse cx="50" cy="38" rx="10" ry="5" fill="#121212"/>
+            <text x="50" y="40" font-size="3.5" font-weight="bold" fill="#fff" text-anchor="middle">OVTH</text>
+        </svg>`,
+        back: `<svg viewBox="0 0 100 100" fill="none">
+            <path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#d6cbb8"/>
+            <text x="50" y="55" font-size="3.2" font-weight="bold" fill="#222" text-anchor="middle">this shirt was made to ran</text>
+        </svg>`
+    },
+    trail: {
+        front: `<svg viewBox="0 0 100 100" fill="none">
+            <path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#222225"/>
+            <ellipse cx="50" cy="38" rx="10" ry="5" fill="#000" stroke="#444" stroke-width="0.5"/>
+            <text x="50" y="40" font-size="3.5" font-weight="bold" fill="#d6cbb8" text-anchor="middle">OVTH</text>
+        </svg>`,
+        back: `<svg viewBox="0 0 100 100" fill="none">
+            <path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#222225"/>
+            <text x="50" y="78" font-size="3" font-weight="bold" fill="#d6cbb8" text-anchor="middle">this shirt was made to trail</text>
+        </svg>`
+    }
+};
+
+const STORAGE_KEY = 'overthill_local_photos';
+let localPhotos = {};
+try { localPhotos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { localPhotos = {}; }
+
+// Priority: a photo uploaded in studio mode, then the configured path,
+// then the drawn mockup. One source of truth for both the card preview
+// and the lightbox.
+function artFor(key, view) {
+    const slot = key + ':' + view;
+    if (localPhotos[slot]) return '<img src="' + localPhotos[slot] + '" alt="' + PRODUCTS[key].code + ' ' + view + '">';
+    const path = view === 'front' ? PRODUCTS[key].frontImg : PRODUCTS[key].backImg;
+    if (path) return '<img src="' + path + '" alt="' + PRODUCTS[key].code + ' ' + view + '">';
+    return MOCKUP[key][view];
+}
+
+function renderCards() {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = Object.entries(PRODUCTS).map(function ([key, p]) {
+        const sideClass = p.dark ? 'img-side dark' : 'img-side';
+        const side = function (view) {
+            return '<div class="' + sideClass + '" data-view="' + view + '" role="button" tabindex="0" ' +
+                   'aria-label="Enlarge ' + view + ' view of ' + p.code + '">' +
+                   artFor(key, view) +
+                   '<span class="zoom-hint">⤢</span>' +
+                   '<span class="side-label">' + view.toUpperCase() + '</span></div>';
+        };
+        return '<div class="product-card" data-product="' + key + '">' +
+               '<div class="product-header"><span class="product-tag">' + p.tag + '</span>' +
+               '<span class="hover-hint">' + p.code + '</span></div>' +
+               '<div class="product-name">' + p.code + '</div>' +
+               '<div class="preview-box">' + side('front') + side('back') + '</div>' +
+               '<div class="product-desc">' + p.desc + '</div></div>';
+    }).join('');
+    bindCards();
+}
+
+/* ---------- Lightbox ---------- */
+const overlay = document.getElementById('lightbox');
+const frame = document.getElementById('lightbox-frame');
+const nameEl = document.getElementById('lightbox-name');
+const switchEl = document.getElementById('lightbox-switch');
+let current = { product: null, view: 'front' };
+
+function renderLightbox() {
+    const p = PRODUCTS[current.product];
+    frame.innerHTML = artFor(current.product, current.view);
+    nameEl.textContent = p.code + ' — ' + p.tag;
+    switchEl.querySelectorAll('button').forEach(function (b) {
+        b.classList.toggle('active', b.dataset.view === current.view);
+    });
+}
+
+function openLightbox(product, view) {
+    current = { product: product, view: view };
+    renderLightbox();
+    overlay.classList.add('active');
+}
+function closeLightbox() { overlay.classList.remove('active'); }
+
+function bindCards() {
+    document.querySelectorAll('.product-card').forEach(function (card) {
+        card.addEventListener('click', function (e) {
+            if (e.target.closest('.img-side')) return;
+            card.classList.toggle('is-open');
+        });
+    });
+    document.querySelectorAll('.img-side').forEach(function (side) {
+        const activate = function (e) {
+            e.stopPropagation();
+            openLightbox(side.closest('.product-card').dataset.product, side.dataset.view);
+        };
+        side.addEventListener('click', activate);
+        side.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(e); }
+        });
+    });
+}
+
+switchEl.querySelectorAll('button').forEach(function (b) {
+    b.addEventListener('click', function () { current.view = b.dataset.view; renderLightbox(); });
+});
+document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+overlay.addEventListener('click', function (e) { if (e.target === overlay) closeLightbox(); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
+
+/* ---------- Studio mode: open the page with ?edit=1 ---------- */
+if (new URLSearchParams(location.search).get('edit') === '1') {
+    document.body.classList.add('studio-on');
+}
+
+function renderSlots() {
+    const grid = document.getElementById('slot-grid');
+    const slots = [];
+    Object.entries(PRODUCTS).forEach(function ([key, p]) {
+        ['front', 'back'].forEach(function (view) {
+            const id = key + ':' + view;
+            const saved = localPhotos[id];
+            slots.push('<div class="slot" data-slot="' + id + '">' +
+                '<strong>' + p.code + ' ' + view + '</strong>' +
+                (saved ? '<img class="thumb" src="' + saved + '" alt="">' : 'Drop a photo here') +
+                '<label class="pick">Choose file<input type="file" accept="image/*"></label></div>');
+        });
+    });
+    grid.innerHTML = slots.join('');
+    bindSlots();
+}
+
+function saveLocal() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(localPhotos)); }
+    catch (e) { alert('That photo is too large for local preview. Try an image under about 1 MB.'); }
+}
+
+function loadFile(file, slotId) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = function () {
+        localPhotos[slotId] = reader.result;
+        saveLocal();
+        renderCards();
+        renderSlots();
+    };
+    reader.readAsDataURL(file);
+}
+
+function bindSlots() {
+    document.querySelectorAll('.slot').forEach(function (slot) {
+        const id = slot.dataset.slot;
+        slot.querySelector('input[type=file]').addEventListener('change', function (e) {
+            loadFile(e.target.files[0], id);
+        });
+        slot.addEventListener('dragover', function (e) { e.preventDefault(); slot.classList.add('dragover'); });
+        slot.addEventListener('dragleave', function () { slot.classList.remove('dragover'); });
+        slot.addEventListener('drop', function (e) {
+            e.preventDefault();
+            slot.classList.remove('dragover');
+            loadFile(e.dataTransfer.files[0], id);
+        });
+    });
+}
+
+document.getElementById('studio-copy').addEventListener('click', function () {
+    const lines = Object.keys(PRODUCTS).map(function (key) {
+        const base = 'img/' + PRODUCTS[key].code;
+        const f = localPhotos[key + ':front'] ? base + '-FRONT.png' : PRODUCTS[key].frontImg;
+        const b = localPhotos[key + ':back'] ? base + '-BACK.png' : PRODUCTS[key].backImg;
+        return '    ' + key + ": { frontImg: '" + f + "', backImg: '" + b + "' }";
+    }).join(',\n');
+    const text = '// paste these paths into the PRODUCTS block\n' + lines;
+    navigator.clipboard.writeText(text)
+        .then(function () { alert('Copied. Save your photos under those filenames in images/.'); })
+        .catch(function () { prompt('Copy this:', text); });
+});
+
+document.getElementById('studio-reset').addEventListener('click', function () {
+    localPhotos = {};
+    localStorage.removeItem(STORAGE_KEY);
+    renderCards();
+    renderSlots();
+});
+
+renderCards();
+renderSlots();
+</script>
+</body>
+</html>
