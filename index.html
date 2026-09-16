@@ -237,13 +237,13 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .order-box.is-active {
             padding: 20px;
-            max-height: 2400px;
+            max-height: 2800px;
             opacity: 1;
             border-color: rgba(214, 203, 184, 0.4);
         }
@@ -279,7 +279,7 @@
             color: var(--text-main);
             border: 1px solid var(--card-border);
             border-radius: 10px;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             outline: none;
             transition: border-color 0.2s ease;
         }
@@ -287,39 +287,38 @@
         .custom-textarea { resize: vertical; min-height: 70px; height: auto; }
         .custom-input:focus, .custom-select:focus, .custom-textarea:focus { border-color: var(--accent); }
 
-        /* ---------- Enhanced Payment Box (UX) ---------- */
+        /* Payment Card & Copy */
         .payment-info-card {
             background: rgba(214, 203, 184, 0.05);
             border: 1px dashed rgba(214, 203, 184, 0.3);
-            border-radius: 12px;
-            padding: 14px;
-            font-size: 0.8rem;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.75rem;
             line-height: 1.6;
             color: var(--text-main);
             text-align: left;
-            position: relative;
         }
+        .payment-info-card strong { color: var(--accent); }
         .copy-acc-btn {
             background: rgba(255,255,255,0.08);
             border: 1px solid var(--card-border);
             color: var(--accent);
-            padding: 4px 8px;
+            padding: 2px 8px;
             border-radius: 6px;
             font-size: 0.7rem;
             cursor: pointer;
-            margin-left: 6px;
+            margin-left: 8px;
             transition: all 0.2s ease;
         }
         .copy-acc-btn:hover { background: var(--accent); color: #000; }
 
-        /* ---------- Enhanced Slip Upload Preview (UX) ---------- */
+        /* Slip Preview */
         .slip-upload-box {
             position: relative;
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
         .slip-preview-container {
             display: none;
             position: relative;
@@ -334,14 +333,12 @@
             padding: 10px;
         }
         .slip-preview-container.active { display: flex; }
-
         .slip-preview-img {
             max-width: 100%;
             max-height: 160px;
             object-fit: contain;
             border-radius: 6px;
         }
-
         .remove-slip-btn {
             position: absolute;
             top: 8px; right: 8px;
@@ -356,66 +353,6 @@
             justify-content: center;
             font-size: 0.8rem;
         }
-
-        /* ---------- Cart rows & Controls (UX) ---------- */
-        .cart-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-            align-items: center;
-        }
-        .cart-row .cart-edition { flex: 2; }
-        .cart-row .cart-size { flex: 1.3; }
-        
-        /* Qty Button Group UX */
-        .qty-control {
-            display: flex;
-            align-items: center;
-            background: #141416;
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            height: 48px;
-            overflow: hidden;
-        }
-        .qty-btn {
-            width: 32px;
-            height: 100%;
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .qty-btn:hover { background: rgba(255,255,255,0.1); }
-        .qty-val {
-            width: 28px;
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .cart-row .cart-remove {
-            padding: 0 12px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #order-summary {
-            background: rgba(214, 203, 184, 0.05);
-            border: 1px dashed rgba(214, 203, 184, 0.3);
-            border-radius: 10px;
-            padding: 12px 14px;
-            font-size: 0.8rem;
-            color: var(--text-main);
-            line-height: 1.7;
-        }
-        #order-summary strong { color: var(--accent); }
 
         .links-group { display: flex; flex-direction: column; gap: 12px; }
 
@@ -583,6 +520,68 @@
             cursor: pointer;
         }
 
+        /* ---------- Cart rows (Supports Edition, Color, Size) ---------- */
+        .cart-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .cart-row .cart-edition { flex: 1.6; }
+        .cart-row .cart-color { flex: 1.1; }
+        .cart-row .cart-size { flex: 1.1; }
+        
+        .qty-control {
+            display: flex;
+            align-items: center;
+            background: #141416;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            height: 48px;
+            overflow: hidden;
+            flex: 0 0 85px;
+        }
+        .qty-btn {
+            width: 26px;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qty-btn:hover { background: rgba(255,255,255,0.1); }
+        .qty-val {
+            flex: 1;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .cart-row .cart-remove {
+            flex: 0 0 auto;
+            padding: 0 10px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #order-summary {
+            background: rgba(214, 203, 184, 0.05);
+            border: 1px dashed rgba(214, 203, 184, 0.3);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 0.78rem;
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+        #order-summary strong { color: var(--accent); }
+
         @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
     </style>
 </head>
@@ -629,13 +628,13 @@
             </button>
 
             <!-- Order Form Card -->
-            <form id="order-form" class="order-box" method="POST" target="hidden_iframe" action="https://script.google.com/macros/s/AKfycbxjiL_zQiUWb3B-CmgZPmhswMO90w8x3kCLTtLHdgzUUvnKBX4kDCHczEK7yql7-sdqUQ/exec">
+            <form id="order-form" class="order-box" method="POST" target="hidden_iframe" action="https://script.google.com/macros/s/AKfycbzDtGvXYytjwkOge3LbCEfEyqrTqFw-d3Wh_ZiF-zyCGznnsgcaTHcLtWuCr61neGd1Zg/exec">
                 <span class="order-title">Build Your Order</span>
 
                 <div class="field-group">
                     <label>Order Items</label>
                     <div id="cart-list"></div>
-                    <button type="button" id="add-item-btn" class="btn-sub" style="padding:12px 14px; justify-content:center; height:48px;">+ Add Item</button>
+                    <button type="button" id="add-item-btn" class="btn-sub" style="padding:10px 14px; justify-content:center; height:48px;">+ Add Item</button>
                 </div>
 
                 <div class="field-group">
@@ -658,23 +657,31 @@
                     <input type="email" id="cust-email" name="email" class="custom-input" placeholder="overthill_goods@gmail.com" required>
                 </div>
 
+                <!-- Delivery Method Selector (Shipping vs Pickup) -->
                 <div class="field-group">
-                    <label for="cust-address">Shipping Address</label>
+                    <label for="delivery-method">Delivery Method</label>
+                    <select id="delivery-method" name="deliveryMethod" class="custom-select">
+                        <option value="shipping">shipping +50 B. (2pcs+ free)</option>
+                        <option value="pickup">meet up</option>
+                    </select>
+                </div>
+
+                <!-- Shipping Address / Pickup Location Container -->
+                <div class="field-group" id="address-container">
+                    <label for="cust-address" id="address-label">Shipping Address</label>
                     <textarea id="cust-address" name="address" class="custom-textarea" placeholder="Full shipping address" required></textarea>
                 </div>
 
                 <div class="payment-info-card">
                     <strong>Payment Account: (K-Bank)<br>
-                    Account no : <strong id="bank-acc">057-1-61082-5</strong> 
-                    <button type="button" class="copy-acc-btn" id="copy-btn">Copy</button><br>
-                    Account Name : <strong>OVERTHILL_GOODS</strong></strong>
+                    Account no : <strong>057-1-61082-5</strong> <button type="button" class="copy-acc-btn" id="copy-btn">Copy</button><br>
+                    Account Name : <strong>OVERTHILL_GOODS</strong></strong><br>
                 </div>
 
                 <div class="field-group slip-upload-box">
                     <label for="cust-slip">Upload Payment Slip</label>
-                    <input type="file" id="cust-slip" class="custom-input" accept="image/*" style="line-height:24px;">
+                    <input type="file" id="cust-slip" class="custom-input" accept="image/*" style="line-height:24px;" required>
                     
-                    <!-- Slip Preview Box (UX) -->
                     <div class="slip-preview-container" id="slip-preview-box">
                         <img id="slip-preview-img" class="slip-preview-img" src="" alt="Slip Preview">
                         <button type="button" class="remove-slip-btn" id="remove-slip-btn">✕</button>
@@ -928,20 +935,24 @@ document.getElementById('studio-reset').addEventListener('click', function () {
 renderCards();
 renderSlots();
 
-/* ---------- Cart Logic & UX Qty Control ---------- */
+/* ---------- Cart Logic (Supports Edition, Color, Size, Qty) ---------- */
 const EDITIONS = [
-  { value: 'OVTH-01 (Road Edition - Sand)', label: 'OVTH-01 Road (Sand) — 590 B.' },
-  { value: 'OVTH-02 (Trail Edition - Black)', label: 'OVTH-02 Trail (Black) — 590 B.' }
+  { value: 'OVTH-01 (Road Edition)', label: 'OVTH-01 Road — 590 B.' },
+  { value: 'OVTH-02 (Trail Edition)', label: 'OVTH-02 Trail — 590 B.' }
+];
+const COLORS = [
+  { value: 'ดำ', label: 'ดำ (Black)' },
+  { value: 'ขาว', label: 'ขาว (White)' }
 ];
 const SIZES = [
-  { value: 'S (Chest 38)', label: 'S (Chest 38")' },
-  { value: 'M (Chest 40)', label: 'M (Chest 40")' },
-  { value: 'L (Chest 42)', label: 'L (Chest 42")' },
-  { value: 'XL (Chest 44)', label: 'XL (Chest 44")' }
+  { value: 'S (Chest 38)', label: 'S (38")' },
+  { value: 'M (Chest 40)', label: 'M (40")' },
+  { value: 'L (Chest 42)', label: 'L (42")' },
+  { value: 'XL (Chest 44)', label: 'XL (44")' }
 ];
 const UNIT_PRICE = 590;
 const MAX_ITEMS = 6;
-let cart = [{ edition: EDITIONS[0].value, size: SIZES[1].value, qty: 1 }];
+let cart = [{ edition: EDITIONS[0].value, color: COLORS[0].value, size: SIZES[1].value, qty: 1 }];
 
 function renderCart() {
     const list = document.getElementById('cart-list');
@@ -950,6 +961,11 @@ function renderCart() {
             '<select class="custom-select cart-edition" data-i="' + i + '">' +
                 EDITIONS.map(function (e) {
                     return '<option value="' + e.value + '"' + (item.edition === e.value ? ' selected' : '') + '>' + e.label + '</option>';
+                }).join('') +
+            '</select>' +
+            '<select class="custom-select cart-color" data-i="' + i + '">' +
+                COLORS.map(function (c) {
+                    return '<option value="' + c.value + '"' + (item.color === c.value ? ' selected' : '') + '>' + c.label + '</option>';
                 }).join('') +
             '</select>' +
             '<select class="custom-select cart-size" data-i="' + i + '">' +
@@ -968,6 +984,9 @@ function renderCart() {
 
     list.querySelectorAll('.cart-edition').forEach(function (el) {
         el.addEventListener('change', function () { cart[+el.dataset.i].edition = el.value; updateSummary(); });
+    });
+    list.querySelectorAll('.cart-color').forEach(function (el) {
+        el.addEventListener('change', function () { cart[+el.dataset.i].color = el.value; updateSummary(); });
     });
     list.querySelectorAll('.cart-size').forEach(function (el) {
         el.addEventListener('change', function () { cart[+el.dataset.i].size = el.value; updateSummary(); });
@@ -996,21 +1015,30 @@ function renderCart() {
 function updateSummary() {
     const totalQty = cart.reduce(function (s, i) { return s + i.qty; }, 0);
     const itemsTotal = totalQty * UNIT_PRICE;
-    const shipping = totalQty >= 2 ? 0 : 50;
+    
+    const deliveryMethod = document.getElementById('delivery-method').value;
+    let shipping = 0;
+    if (deliveryMethod === 'shipping') {
+        shipping = totalQty >= 2 ? 0 : 50;
+    }
+    
     const grandTotal = itemsTotal + shipping;
 
-    const shipStatusMsg = totalQty >= 2 
-        ? '<span style="color:#a3e635; font-weight:bold;">จัดส่งฟรีแล้ว!</span>' 
-        : '<span style="color:#71717a;">ซื้ออีก 1 ชิ้นเพื่อรับสิทธิ์ส่งฟรี</span>';
+    let feeText = '';
+    if (deliveryMethod === 'pickup') {
+        feeText = 'free (Pickup at location)';
+    } else {
+        feeText = (shipping === 0 ? 'free shipping (2 pcs+)' : shipping + ' B.');
+    }
 
     document.getElementById('order-summary').innerHTML =
-        totalQty + ' ชิ้น × ' + UNIT_PRICE + ' B. = ' + itemsTotal + ' B.<br>' +
-        'ค่าส่ง: ' + (shipping === 0 ? '0 B. (ฟรีโปรโมชั่น)' : shipping + ' B. (' + shipStatusMsg + ')') + '<br>' +
-        '<strong style="font-size:0.95rem;">ยอดรวมสุทธิ: ' + grandTotal + ' B.</strong>';
+        totalQty + ' pcs × ' + UNIT_PRICE + ' B. = ' + itemsTotal + ' B.<br>' +
+        'fee: ' + feeText + '<br>' +
+        '<strong>total: ' + grandTotal + ' B.</strong>';
 
     document.getElementById('itemsJson').value = JSON.stringify(cart);
     document.getElementById('itemsSummary').value = cart.map(function (i) {
-        return i.edition.split(' ')[0] + ' ' + i.size.split(' ')[0] + ' x' + i.qty;
+        return i.edition.split(' ')[0] + ' / สี' + i.color + ' / ' + i.size.split(' ')[0] + ' x' + i.qty;
     }).join(', ');
     document.getElementById('shippingFee').value = shipping;
     document.getElementById('grandTotal').value = grandTotal;
@@ -1018,8 +1046,31 @@ function updateSummary() {
 
 document.getElementById('add-item-btn').addEventListener('click', function () {
     if (cart.length >= MAX_ITEMS) { alert('เพิ่มได้สูงสุด ' + MAX_ITEMS + ' รายการต่อออเดอร์ครับ'); return; }
-    cart.push({ edition: EDITIONS[0].value, size: SIZES[1].value, qty: 1 });
+    cart.push({ edition: EDITIONS[0].value, color: COLORS[0].value, size: SIZES[1].value, qty: 1 });
     renderCart();
+});
+
+/* ---------- Handle Delivery Method Switch (Shipping vs Pickup) ---------- */
+const deliveryMethodSelect = document.getElementById('delivery-method');
+const addressContainer = document.getElementById('address-container');
+
+deliveryMethodSelect.addEventListener('change', function() {
+    const method = this.value;
+    if (method === 'pickup') {
+        addressContainer.innerHTML = `
+            <label for="pickup-location">Pickup Location</label>
+            <select id="pickup-location" name="address" class="custom-select" required>
+                <option value="CMU Main Stadium">CMU Main Stadium</option>
+                <option value="Basecamp Coffee">Basecamp Coffee</option>
+            </select>
+        `;
+    } else {
+        addressContainer.innerHTML = `
+            <label for="cust-address">Shipping Address</label>
+            <textarea id="cust-address" name="address" class="custom-textarea" placeholder="Full shipping address" required></textarea>
+        `;
+    }
+    updateSummary();
 });
 
 renderCart();
@@ -1079,7 +1130,7 @@ toggleBtn.addEventListener('click', function() {
     }
 });
 
-/* ---------- Form Submission Handler ---------- */
+/* ---------- Handle Form Submission & Slip Base64 Conversion ---------- */
 let isSubmitted = false;
 const iframe = document.getElementById('hidden_iframe');
 
@@ -1093,7 +1144,9 @@ iframe.addEventListener('load', function() {
         
         document.getElementById('order-form').reset();
         slipPreviewBox.classList.remove('active');
-        cart = [{ edition: EDITIONS[0].value, size: SIZES[1].value, qty: 1 }];
+        deliveryMethodSelect.value = 'shipping';
+        deliveryMethodSelect.dispatchEvent(new Event('change'));
+        cart = [{ edition: EDITIONS[0].value, color: COLORS[0].value, size: SIZES[1].value, qty: 1 }];
         renderCart();
         orderForm.classList.remove('is-active');
         toggleBtn.classList.remove('active');
@@ -1104,7 +1157,7 @@ iframe.addEventListener('load', function() {
 document.getElementById('order-form').addEventListener('submit', function(e) {
     const slipFileInput = document.getElementById('cust-slip');
     
-    if (!slipFileInput.files.length && !document.getElementById('slipData').value) {
+    if (!slipFileInput.files.length) {
         e.preventDefault();
         alert('please upload your payment slip');
         return;
