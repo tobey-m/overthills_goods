@@ -243,7 +243,7 @@
 
         .order-box.is-active {
             padding: 20px;
-            max-height: 1200px;
+            max-height: 2000px;
             opacity: 1;
             border-color: rgba(214, 203, 184, 0.4);
         }
@@ -464,6 +464,34 @@
             cursor: pointer;
         }
 
+        /* ---------- Cart rows ---------- */
+        .cart-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .cart-row .cart-edition { flex: 2; }
+        .cart-row .cart-size { flex: 1.3; }
+        .cart-row .cart-qty { width: 56px; flex: 0 0 56px; padding: 12px 8px; text-align: center; }
+        .cart-row .cart-remove {
+            flex: 0 0 auto;
+            padding: 0 12px;
+            border-radius: 10px;
+            align-self: stretch;
+        }
+
+        #order-summary {
+            background: rgba(214, 203, 184, 0.05);
+            border: 1px dashed rgba(214, 203, 184, 0.3);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 0.78rem;
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+        #order-summary strong { color: var(--accent); }
+
         @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
     </style>
 </head>
@@ -505,31 +533,23 @@
 
         <div class="links-group">
             <button type="button" id="btn-toggle-order" class="btn btn-main btn-toggle-order">
-                <span>Pre-Order Drop 01 (590 THB)</span>
+                <span>Pre-Order Drop 01</span>
                 <span class="arrow">→</span>
             </button>
 
             <!-- Order Form Card -->
-            <form id="order-form" class="order-box" method="POST" target="hidden_iframe" action="https://script.google.com/macros/s/AKfycbwAHpoylblgDNxZFAimy6jsE3QXxH7i4X4GUkGSvY6TGO6dv_GrooJ09zs1ehxsGvxEIA/exec">
-                <span class="order-title">Select Edition & Details</span>
-                
+            <form id="order-form" class="order-box" method="POST" target="hidden_iframe" action="https://script.google.com/macros/s/AKfycbzDtGvXYytjwkOge3LbCEfEyqrTqFw-d3Wh_ZiF-zyCGznnsgcaTHcLtWuCr61neGd1Zg/exec">
+                <span class="order-title">Build Your Order</span>
+
                 <div class="field-group">
-                    <label for="edition-select">Select Edition</label>
-                    <select id="edition-select" name="edition" class="custom-select" required>
-                        <option value="OVTH-01 (Road Edition - Sand)">OVTH-01 (Road Edition - Sand) 590 B.</option>
-                        <option value="OVTH-02 (Trail Edition - Black)">OVTH-02 (Trail Edition - Black) 590 B.</option>
-                        <option value="Bundle Pack (Road + Trail)">Bundle Pack (Road + Trail) 1150 B.</option>
-                    </select>
+                    <label>Order Items</label>
+                    <div id="cart-list"></div>
+                    <button type="button" id="add-item-btn" class="btn-sub" style="padding:10px 14px; justify-content:center;">+ Add Item</button>
                 </div>
 
                 <div class="field-group">
-                    <label for="size-select">Select Size</label>
-                    <select id="size-select" name="size" class="custom-select" required>
-                        <option value="S (Chest 38)">S (Chest 38")</option>
-                        <option value="M (Chest 40)">M (Chest 40")</option>
-                        <option value="L (Chest 42)">L (Chest 42")</option>
-                        <option value="XL (Chest 44)">XL (Chest 44")</option>
-                    </select>
+                    <label>Order Summary</label>
+                    <div id="order-summary"></div>
                 </div>
 
                 <div class="field-group">
@@ -562,6 +582,12 @@
                     <label for="cust-slip">Upload Payment Slip</label>
                     <input type="file" id="cust-slip" class="custom-input" accept="image/*" required>
                 </div>
+
+                <!-- Hidden inputs: cart & totals -->
+                <input type="hidden" name="itemsJson" id="itemsJson">
+                <input type="hidden" name="itemsSummary" id="itemsSummary">
+                <input type="hidden" name="shippingFee" id="shippingFee">
+                <input type="hidden" name="grandTotal" id="grandTotal">
 
                 <!-- Hidden inputs สำหรับส่งข้อมูลภาพสลิป -->
                 <input type="hidden" name="slipData" id="slipData">
@@ -804,6 +830,88 @@ document.getElementById('studio-reset').addEventListener('click', function () {
 renderCards();
 renderSlots();
 
+/* ---------- Cart Logic ---------- */
+const EDITIONS = [
+  { value: 'OVTH-01 (Road Edition - Sand)', label: 'OVTH-01 Road (Sand) — 590 B.' },
+  { value: 'OVTH-02 (Trail Edition - Black)', label: 'OVTH-02 Trail (Black) — 590 B.' }
+];
+const SIZES = [
+  { value: 'S (Chest 38)', label: 'S (Chest 38")' },
+  { value: 'M (Chest 40)', label: 'M (Chest 40")' },
+  { value: 'L (Chest 42)', label: 'L (Chest 42")' },
+  { value: 'XL (Chest 44)', label: 'XL (Chest 44")' }
+];
+const UNIT_PRICE = 590;
+const MAX_ITEMS = 6;
+let cart = [{ edition: EDITIONS[0].value, size: SIZES[1].value, qty: 1 }];
+
+function renderCart() {
+    const list = document.getElementById('cart-list');
+    list.innerHTML = cart.map(function (item, i) {
+        return '<div class="cart-row">' +
+            '<select class="custom-select cart-edition" data-i="' + i + '">' +
+                EDITIONS.map(function (e) {
+                    return '<option value="' + e.value + '"' + (item.edition === e.value ? ' selected' : '') + '>' + e.label + '</option>';
+                }).join('') +
+            '</select>' +
+            '<select class="custom-select cart-size" data-i="' + i + '">' +
+                SIZES.map(function (s) {
+                    return '<option value="' + s.value + '"' + (item.size === s.value ? ' selected' : '') + '>' + s.label + '</option>';
+                }).join('') +
+            '</select>' +
+            '<input type="number" min="1" max="20" class="custom-input cart-qty" data-i="' + i + '" value="' + item.qty + '">' +
+            (cart.length > 1 ? '<button type="button" class="btn-sub cart-remove" data-i="' + i + '">✕</button>' : '') +
+        '</div>';
+    }).join('');
+
+    list.querySelectorAll('.cart-edition').forEach(function (el) {
+        el.addEventListener('change', function () { cart[+el.dataset.i].edition = el.value; updateSummary(); });
+    });
+    list.querySelectorAll('.cart-size').forEach(function (el) {
+        el.addEventListener('change', function () { cart[+el.dataset.i].size = el.value; updateSummary(); });
+    });
+    list.querySelectorAll('.cart-qty').forEach(function (el) {
+        el.addEventListener('input', function () {
+            cart[+el.dataset.i].qty = Math.max(1, Math.min(20, parseInt(el.value) || 1));
+            updateSummary();
+        });
+    });
+    list.querySelectorAll('.cart-remove').forEach(function (el) {
+        el.addEventListener('click', function () {
+            cart.splice(+el.dataset.i, 1);
+            renderCart();
+        });
+    });
+    updateSummary();
+}
+
+function updateSummary() {
+    const totalQty = cart.reduce(function (s, i) { return s + i.qty; }, 0);
+    const itemsTotal = totalQty * UNIT_PRICE;
+    const shipping = totalQty >= 2 ? 0 : 50;
+    const grandTotal = itemsTotal + shipping;
+
+    document.getElementById('order-summary').innerHTML =
+        totalQty + ' pcs × ' + UNIT_PRICE + ' B. = ' + itemsTotal + ' B.<br>' +
+        'fee: ' + (shipping === 0 ? 'free shipping (2 pcs+)' : shipping + ' B.') + '<br>' +
+        '<strong>total: ' + grandTotal + ' B.</strong>';
+
+    document.getElementById('itemsJson').value = JSON.stringify(cart);
+    document.getElementById('itemsSummary').value = cart.map(function (i) {
+        return i.edition.split(' ')[0] + ' ' + i.size.split(' ')[0] + ' x' + i.qty;
+    }).join(', ');
+    document.getElementById('shippingFee').value = shipping;
+    document.getElementById('grandTotal').value = grandTotal;
+}
+
+document.getElementById('add-item-btn').addEventListener('click', function () {
+    if (cart.length >= MAX_ITEMS) { alert('เพิ่มได้สูงสุด ' + MAX_ITEMS + ' รายการต่อออเดอร์ครับ'); return; }
+    cart.push({ edition: EDITIONS[0].value, size: SIZES[1].value, qty: 1 });
+    renderCart();
+});
+
+renderCart();
+
 /* ---------- Toggle Form Logic ---------- */
 const toggleBtn = document.getElementById('btn-toggle-order');
 const orderForm = document.getElementById('order-form');
@@ -832,6 +940,8 @@ iframe.addEventListener('load', function() {
         btnText.textContent = 'Confirm Order';
         
         document.getElementById('order-form').reset();
+        cart = [{ edition: EDITIONS[0].value, size: SIZES[1].value, qty: 1 }];
+        renderCart();
         orderForm.classList.remove('is-active');
         toggleBtn.classList.remove('active');
         isSubmitted = false;
@@ -843,7 +953,7 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
     
     if (!slipFileInput.files.length) {
         e.preventDefault();
-        alert('please upload your payment');
+        alert('please upload your payment slip');
         return;
     }
 
