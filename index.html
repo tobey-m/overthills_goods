@@ -138,19 +138,19 @@
 
         .preview-box {
             width: 100%;
-            height: 0;
+            max-height: 0;
             opacity: 0;
             overflow: hidden;
             border-radius: 8px;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            background: #161618;
+            background: transparent;
             display: flex;
-            gap: 4px;
+            gap: 6px;
         }
 
         .img-side {
             flex: 1;
-            height: 100%;
+            aspect-ratio: 1 / 1;
             position: relative;
             display: flex;
             align-items: center;
@@ -159,6 +159,7 @@
             border-radius: 6px;
             outline: 1px solid transparent;
             transition: outline-color 0.2s ease;
+            overflow: hidden;
         }
 
         .img-side.dark { background: #141416; }
@@ -193,7 +194,7 @@
 
         .product-card:hover .preview-box,
         .product-card.is-open .preview-box {
-            height: 140px;
+            max-height: 300px;
             opacity: 1;
             margin: 6px 0;
         }
@@ -225,6 +226,78 @@
         .product-name { font-size: 0.95rem; font-weight: 700; }
         .product-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; }
 
+        /* ---------- Collapsible Order Box ---------- */
+        .order-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 0 20px;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .order-box.is-active {
+            padding: 20px;
+            max-height: 1200px;
+            opacity: 1;
+            border-color: rgba(214, 203, 184, 0.4);
+        }
+
+        .order-title {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: left;
+        }
+
+        .field-group label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .custom-input, .custom-select, .custom-textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: #141416;
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .custom-textarea { resize: vertical; min-height: 60px; }
+        .custom-input:focus, .custom-select:focus, .custom-textarea:focus { border-color: var(--accent); }
+
+        .payment-info-card {
+            background: rgba(214, 203, 184, 0.05);
+            border: 1px dashed rgba(214, 203, 184, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: var(--text-main);
+            text-align: left;
+        }
+        .payment-info-card strong { color: var(--accent); }
+
         .links-group { display: flex; flex-direction: column; gap: 12px; }
 
         .btn {
@@ -237,14 +310,18 @@
             font-size: 0.95rem;
             text-decoration: none;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            border: none;
         }
 
         .btn-main {
             background: var(--text-main);
             color: #000;
             box-shadow: 0 0 20px var(--glow);
+            width: 100%;
         }
         .btn-main:hover { background: var(--accent); transform: scale(1.01); }
+        .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .btn-sub {
             background: var(--card-bg);
@@ -253,7 +330,8 @@
         }
         .btn-sub:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
 
-        .arrow { font-size: 1.1rem; }
+        .arrow { font-size: 1.1rem; transition: transform 0.3s ease; }
+        .btn-toggle-order.active .arrow { transform: rotate(90deg); }
 
         footer {
             text-align: center;
@@ -333,7 +411,7 @@
         }
         .lightbox-switch button.active { border-color: var(--accent); color: var(--accent); }
 
-        /* ---------- Studio (image upload) mode ---------- */
+        /* ---------- Studio mode ---------- */
         .studio { display: none; }
         body.studio-on .studio { display: block; }
 
@@ -391,6 +469,9 @@
 </head>
 <body>
 
+    <!-- Hidden Iframe สำหรับรับ Response ทะลุปัญหา CORS -->
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
     <div class="wrapper">
         <header>
             <div class="badge">First Drop / Prototype Phase</div>
@@ -405,7 +486,7 @@
         <span class="section-label">Current Lineup — tap a card to preview, tap a photo to enlarge</span>
         <div class="product-grid" id="product-grid"></div>
 
-        <!-- Studio panel: hidden unless the page URL ends with ?edit=1 -->
+        <!-- Studio panel -->
         <div class="studio">
             <div class="studio-panel">
                 <h2>Studio — swap product photos</h2>
@@ -423,10 +504,76 @@
         </div>
 
         <div class="links-group">
-            <a href="#" class="btn btn-main">
+            <button type="button" id="btn-toggle-order" class="btn btn-main btn-toggle-order">
                 <span>Pre-Order Drop 01 (590 THB)</span>
                 <span class="arrow">→</span>
-            </a>
+            </button>
+
+            <!-- Order Form Card -->
+            <form id="order-form" class="order-box" method="POST" target="hidden_iframe" action="https://script.google.com/macros/s/AKfycbwAHpoylblgDNxZFAimy6jsE3QXxH7i4X4GUkGSvY6TGO6dv_GrooJ09zs1ehxsGvxEIA/exec">
+                <span class="order-title">Select Edition & Details</span>
+                
+                <div class="field-group">
+                    <label for="edition-select">Select Edition</label>
+                    <select id="edition-select" name="edition" class="custom-select" required>
+                        <option value="OVTH-01 (Road Edition - Sand)">OVTH-01 (Road Edition - Sand) 590 B.</option>
+                        <option value="OVTH-02 (Trail Edition - Black)">OVTH-02 (Trail Edition - Black) 590 B.</option>
+                        <option value="Bundle Pack (Road + Trail)">Bundle Pack (Road + Trail) 1150 B.</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label for="size-select">Select Size</label>
+                    <select id="size-select" name="size" class="custom-select" required>
+                        <option value="S (Chest 38)">S (Chest 38")</option>
+                        <option value="M (Chest 40)">M (Chest 40")</option>
+                        <option value="L (Chest 42)">L (Chest 42")</option>
+                        <option value="XL (Chest 44)">XL (Chest 44")</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label for="cust-name">Name</label>
+                    <input type="text" id="cust-name" name="name" class="custom-input" placeholder="Your Name" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="cust-phone">Phone Number</label>
+                    <input type="tel" id="cust-phone" name="phone" class="custom-input" placeholder="08X-XXX-XXXX" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="cust-email">E-Mail</label>
+                    <input type="email" id="cust-email" name="email" class="custom-input" placeholder="overthill_goods@gmail.com" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="cust-address">Shipping Address</label>
+                    <textarea id="cust-address" name="address" class="custom-textarea" placeholder="Full shipping address" required></textarea>
+                </div>
+
+                <div class="payment-info-card">
+                    <strong>Payment Account: (K-Bank)<br>
+                    Account no : <strong>057-1-61082-5</strong><br>
+                    Account Name : <strong>OVERTHILL_GOODS</strong></strong><br>
+                </div>
+
+                <div class="field-group">
+                    <label for="cust-slip">Upload Payment Slip</label>
+                    <input type="file" id="cust-slip" class="custom-input" accept="image/*" required>
+                </div>
+
+                <!-- Hidden inputs สำหรับส่งข้อมูลภาพสลิป -->
+                <input type="hidden" name="slipData" id="slipData">
+                <input type="hidden" name="slipName" id="slipName">
+                <input type="hidden" name="slipType" id="slipType">
+
+                <button type="submit" id="btn-submit-order" class="btn btn-main" style="margin-top: 6px;">
+                    <span id="btn-text">Confirm Order</span>
+                    <span class="arrow">→</span>
+                </button>
+            </form>
+
             <a href="https://instagram.com/overthill_goods" target="_blank" class="btn btn-sub">
                 <span>Instagram @overthill_goods</span>
                 <span class="arrow">↗</span>
@@ -453,13 +600,6 @@
     </div>
 
 <script>
-/* ============================================================
-   EDIT HERE — the only block you need to touch to change photos.
-   Photos live in the img/ folder beside this file. Paths are
-   case-sensitive once the site is hosted, so they must match the
-   filenames exactly. Leave a value empty and the drawn mockup
-   shows instead.
-   ============================================================ */
 const PRODUCTS = {
     road: {
         tag: 'Road Edition',
@@ -478,9 +618,7 @@ const PRODUCTS = {
         backImg:  'img/OVTH-02-BACK.SVG'
     }
 };
-/* ========================= END EDIT ========================= */
 
-// Drawn fallbacks, used whenever a photo path is empty.
 const MOCKUP = {
     road: {
         front: `<svg viewBox="0 0 100 100" fill="none">
@@ -510,9 +648,6 @@ const STORAGE_KEY = 'overthill_local_photos';
 let localPhotos = {};
 try { localPhotos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { localPhotos = {}; }
 
-// Priority: a photo uploaded in studio mode, then the configured path,
-// then the drawn mockup. One source of truth for both the card preview
-// and the lightbox.
 function artFor(key, view) {
     const slot = key + ':' + view;
     if (localPhotos[slot]) return '<img src="' + localPhotos[slot] + '" alt="' + PRODUCTS[key].code + ' ' + view + '">';
@@ -591,7 +726,7 @@ document.querySelector('.lightbox-close').addEventListener('click', closeLightbo
 overlay.addEventListener('click', function (e) { if (e.target === overlay) closeLightbox(); });
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
 
-/* ---------- Studio mode: open the page with ?edit=1 ---------- */
+/* ---------- Studio mode ---------- */
 if (new URLSearchParams(location.search).get('edit') === '1') {
     document.body.classList.add('studio-on');
 }
@@ -668,6 +803,72 @@ document.getElementById('studio-reset').addEventListener('click', function () {
 
 renderCards();
 renderSlots();
+
+/* ---------- Toggle Form Logic ---------- */
+const toggleBtn = document.getElementById('btn-toggle-order');
+const orderForm = document.getElementById('order-form');
+
+toggleBtn.addEventListener('click', function() {
+    toggleBtn.classList.toggle('active');
+    orderForm.classList.toggle('is-active');
+    
+    if(orderForm.classList.contains('is-active')) {
+        setTimeout(() => {
+            orderForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+});
+
+/* ---------- Handle Form Submission & Slip Base64 Conversion ---------- */
+let isSubmitted = false;
+const iframe = document.getElementById('hidden_iframe');
+
+iframe.addEventListener('load', function() {
+    if (isSubmitted) {
+        alert('Your order is locked in! Confirmation email has been sent.');
+        const btn = document.getElementById('btn-submit-order');
+        const btnText = document.getElementById('btn-text');
+        btn.disabled = false;
+        btnText.textContent = 'Confirm Order';
+        
+        document.getElementById('order-form').reset();
+        orderForm.classList.remove('is-active');
+        toggleBtn.classList.remove('active');
+        isSubmitted = false;
+    }
+});
+
+document.getElementById('order-form').addEventListener('submit', function(e) {
+    const slipFileInput = document.getElementById('cust-slip');
+    
+    if (!slipFileInput.files.length) {
+        e.preventDefault();
+        alert('please upload your payment');
+        return;
+    }
+
+    const file = slipFileInput.files[0];
+    
+    if (!document.getElementById('slipData').value) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('btn-submit-order');
+        const btnText = document.getElementById('btn-text');
+        btn.disabled = true;
+        btnText.textContent = 'Submitting...';
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            document.getElementById('slipData').value = evt.target.result;
+            document.getElementById('slipName').value = file.name;
+            document.getElementById('slipType').value = file.type || 'image/jpeg';
+            
+            isSubmitted = true;
+            document.getElementById('order-form').submit();
+        };
+        reader.readAsDataURL(file);
+    }
+});
 </script>
 </body>
 </html>
