@@ -243,7 +243,7 @@
 
         .order-box.is-active {
             padding: 20px;
-            max-height: 2000px;
+            max-height: 2400px;
             opacity: 1;
             border-color: rgba(214, 203, 184, 0.4);
         }
@@ -271,32 +271,89 @@
             letter-spacing: 0.5px;
         }
 
+        /* ----- UX: Input size for Mobile ----- */
         .custom-input, .custom-select, .custom-textarea {
             width: 100%;
+            height: 48px;
             padding: 12px 14px;
             background: #141416;
             color: var(--text-main);
             border: 1px solid var(--card-border);
             border-radius: 10px;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             outline: none;
             transition: border-color 0.2s ease;
         }
 
-        .custom-textarea { resize: vertical; min-height: 60px; }
+        .custom-textarea { resize: vertical; min-height: 70px; height: auto; }
         .custom-input:focus, .custom-select:focus, .custom-textarea:focus { border-color: var(--accent); }
 
+        /* ----- UX: Payment Box & Copy Button ----- */
         .payment-info-card {
             background: rgba(214, 203, 184, 0.05);
             border: 1px dashed rgba(214, 203, 184, 0.3);
             border-radius: 10px;
             padding: 12px;
             font-size: 0.75rem;
-            line-height: 1.5;
+            line-height: 1.6;
             color: var(--text-main);
             text-align: left;
         }
         .payment-info-card strong { color: var(--accent); }
+        .copy-acc-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--card-border);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: all 0.2s ease;
+        }
+        .copy-acc-btn:hover { background: var(--accent); color: #000; }
+
+        /* ----- UX: Slip Upload Preview ----- */
+        .slip-upload-box {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .slip-preview-container {
+            display: none;
+            position: relative;
+            width: 100%;
+            max-height: 180px;
+            background: #141416;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            overflow: hidden;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .slip-preview-container.active { display: flex; }
+        .slip-preview-img {
+            max-width: 100%;
+            max-height: 160px;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+        .remove-slip-btn {
+            position: absolute;
+            top: 8px; right: 8px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid var(--card-border);
+            color: #ff5555;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
 
         .links-group { display: flex; flex-direction: column; gap: 12px; }
 
@@ -464,7 +521,7 @@
             cursor: pointer;
         }
 
-        /* ---------- Cart rows ---------- */
+        /* ---------- Cart rows (UX Update) ---------- */
         .cart-row {
             display: flex;
             gap: 6px;
@@ -473,12 +530,45 @@
         }
         .cart-row .cart-edition { flex: 2; }
         .cart-row .cart-size { flex: 1.3; }
-        .cart-row .cart-qty { width: 56px; flex: 0 0 56px; padding: 12px 8px; text-align: center; }
+        
+        .qty-control {
+            display: flex;
+            align-items: center;
+            background: #141416;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            height: 48px;
+            overflow: hidden;
+        }
+        .qty-btn {
+            width: 32px;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qty-btn:hover { background: rgba(255,255,255,0.1); }
+        .qty-val {
+            width: 28px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
         .cart-row .cart-remove {
             flex: 0 0 auto;
             padding: 0 12px;
+            height: 48px;
             border-radius: 10px;
             align-self: stretch;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #order-summary {
@@ -544,7 +634,7 @@
                 <div class="field-group">
                     <label>Order Items</label>
                     <div id="cart-list"></div>
-                    <button type="button" id="add-item-btn" class="btn-sub" style="padding:10px 14px; justify-content:center;">+ Add Item</button>
+                    <button type="button" id="add-item-btn" class="btn-sub" style="padding:10px 14px; justify-content:center; height:48px;">+ Add Item</button>
                 </div>
 
                 <div class="field-group">
@@ -574,13 +664,18 @@
 
                 <div class="payment-info-card">
                     <strong>Payment Account: (K-Bank)<br>
-                    Account no : <strong>057-1-61082-5</strong><br>
+                    Account no : <strong>057-1-61082-5</strong> <button type="button" class="copy-acc-btn" id="copy-btn">Copy</button><br>
                     Account Name : <strong>OVERTHILL_GOODS</strong></strong><br>
                 </div>
 
-                <div class="field-group">
+                <div class="field-group slip-upload-box">
                     <label for="cust-slip">Upload Payment Slip</label>
-                    <input type="file" id="cust-slip" class="custom-input" accept="image/*" required>
+                    <input type="file" id="cust-slip" class="custom-input" accept="image/*" style="line-height:24px;" required>
+                    
+                    <div class="slip-preview-container" id="slip-preview-box">
+                        <img id="slip-preview-img" class="slip-preview-img" src="" alt="Slip Preview">
+                        <button type="button" class="remove-slip-btn" id="remove-slip-btn">✕</button>
+                    </div>
                 </div>
 
                 <!-- Hidden inputs: cart & totals -->
@@ -830,7 +925,7 @@ document.getElementById('studio-reset').addEventListener('click', function () {
 renderCards();
 renderSlots();
 
-/* ---------- Cart Logic ---------- */
+/* ---------- Cart Logic & UX Qty Control ---------- */
 const EDITIONS = [
   { value: 'OVTH-01 (Road Edition - Sand)', label: 'OVTH-01 Road (Sand) — 590 B.' },
   { value: 'OVTH-02 (Trail Edition - Black)', label: 'OVTH-02 Trail (Black) — 590 B.' }
@@ -859,7 +954,11 @@ function renderCart() {
                     return '<option value="' + s.value + '"' + (item.size === s.value ? ' selected' : '') + '>' + s.label + '</option>';
                 }).join('') +
             '</select>' +
-            '<input type="number" min="1" max="20" class="custom-input cart-qty" data-i="' + i + '" value="' + item.qty + '">' +
+            '<div class="qty-control">' +
+                '<button type="button" class="qty-btn qty-minus" data-i="' + i + '">−</button>' +
+                '<span class="qty-val">' + item.qty + '</span>' +
+                '<button type="button" class="qty-btn qty-plus" data-i="' + i + '">+</button>' +
+            '</div>' +
             (cart.length > 1 ? '<button type="button" class="btn-sub cart-remove" data-i="' + i + '">✕</button>' : '') +
         '</div>';
     }).join('');
@@ -870,10 +969,16 @@ function renderCart() {
     list.querySelectorAll('.cart-size').forEach(function (el) {
         el.addEventListener('change', function () { cart[+el.dataset.i].size = el.value; updateSummary(); });
     });
-    list.querySelectorAll('.cart-qty').forEach(function (el) {
-        el.addEventListener('input', function () {
-            cart[+el.dataset.i].qty = Math.max(1, Math.min(20, parseInt(el.value) || 1));
-            updateSummary();
+    list.querySelectorAll('.qty-minus').forEach(function (el) {
+        el.addEventListener('click', function () {
+            const idx = +el.dataset.i;
+            if (cart[idx].qty > 1) { cart[idx].qty--; renderCart(); }
+        });
+    });
+    list.querySelectorAll('.qty-plus').forEach(function (el) {
+        el.addEventListener('click', function () {
+            const idx = +el.dataset.i;
+            if (cart[idx].qty < 20) { cart[idx].qty++; renderCart(); }
         });
     });
     list.querySelectorAll('.cart-remove').forEach(function (el) {
@@ -885,6 +990,7 @@ function renderCart() {
     updateSummary();
 }
 
+// อัปเดต Summary โดยคงข้อความเดิมของคุณเอาไว้แบบ 100%
 function updateSummary() {
     const totalQty = cart.reduce(function (s, i) { return s + i.qty; }, 0);
     const itemsTotal = totalQty * UNIT_PRICE;
@@ -911,6 +1017,46 @@ document.getElementById('add-item-btn').addEventListener('click', function () {
 });
 
 renderCart();
+
+/* ---------- Copy Bank Account UX ---------- */
+document.getElementById('copy-btn').addEventListener('click', function() {
+    const accNum = "057-1-61082-5";
+    navigator.clipboard.writeText(accNum.replace(/-/g, '')).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = 'Copied!';
+        btn.style.background = '#d6cbb8';
+        btn.style.color = '#000';
+        setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.style.background = 'rgba(255,255,255,0.08)';
+            btn.style.color = 'var(--accent)';
+        }, 2000);
+    });
+});
+
+/* ---------- Slip Upload Preview UX ---------- */
+const slipInput = document.getElementById('cust-slip');
+const slipPreviewBox = document.getElementById('slip-preview-box');
+const slipPreviewImg = document.getElementById('slip-preview-img');
+const removeSlipBtn = document.getElementById('remove-slip-btn');
+
+slipInput.addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            slipPreviewImg.src = e.target.result;
+            slipPreviewBox.classList.add('active');
+        };
+        reader.readAsDataURL(this.files[0]);
+    }
+});
+
+removeSlipBtn.addEventListener('click', function() {
+    slipInput.value = '';
+    document.getElementById('slipData').value = '';
+    slipPreviewImg.src = '';
+    slipPreviewBox.classList.remove('active');
+});
 
 /* ---------- Toggle Form Logic ---------- */
 const toggleBtn = document.getElementById('btn-toggle-order');
@@ -940,6 +1086,7 @@ iframe.addEventListener('load', function() {
         btnText.textContent = 'Confirm Order';
         
         document.getElementById('order-form').reset();
+        slipPreviewBox.classList.remove('active'); // ล้างรูปพรีวิวออกหลังส่งข้อมูลสำเร็จ
         cart = [{ edition: EDITIONS[0].value, size: SIZES[1].value, qty: 1 }];
         renderCart();
         orderForm.classList.remove('is-active');
