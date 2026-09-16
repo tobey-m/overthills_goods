@@ -243,7 +243,7 @@
 
         .order-box.is-active {
             padding: 20px;
-            max-height: 2400px;
+            max-height: 2500px;
             opacity: 1;
             border-color: rgba(214, 203, 184, 0.4);
         }
@@ -271,7 +271,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* ----- UX: Input size for Mobile ----- */
         .custom-input, .custom-select, .custom-textarea {
             width: 100%;
             height: 48px;
@@ -288,7 +287,7 @@
         .custom-textarea { resize: vertical; min-height: 70px; height: auto; }
         .custom-input:focus, .custom-select:focus, .custom-textarea:focus { border-color: var(--accent); }
 
-        /* ----- UX: Payment Box & Copy Button ----- */
+        /* Payment Card & Copy */
         .payment-info-card {
             background: rgba(214, 203, 184, 0.05);
             border: 1px dashed rgba(214, 203, 184, 0.3);
@@ -313,7 +312,7 @@
         }
         .copy-acc-btn:hover { background: var(--accent); color: #000; }
 
-        /* ----- UX: Slip Upload Preview ----- */
+        /* Slip Preview */
         .slip-upload-box {
             position: relative;
             display: flex;
@@ -521,7 +520,7 @@
             cursor: pointer;
         }
 
-        /* ---------- Cart rows (UX Update) ---------- */
+        /* ---------- Cart rows ---------- */
         .cart-row {
             display: flex;
             gap: 6px;
@@ -657,8 +656,18 @@
                     <input type="email" id="cust-email" name="email" class="custom-input" placeholder="overthill_goods@gmail.com" required>
                 </div>
 
+                <!-- Delivery Method Selector (Shipping vs Pickup) -->
                 <div class="field-group">
-                    <label for="cust-address">Shipping Address</label>
+                    <label for="delivery-method">Delivery Method</label>
+                    <select id="delivery-method" name="deliveryMethod" class="custom-select">
+                        <option value="shipping">shipping +50 B. (2pcs+ free)</option>
+                        <option value="pickup">meet up</option>
+                    </select>
+                </div>
+
+                <!-- Shipping Address / Pickup Location Container -->
+                <div class="field-group" id="address-container">
+                    <label for="cust-address" id="address-label">Shipping Address</label>
                     <textarea id="cust-address" name="address" class="custom-textarea" placeholder="Full shipping address" required></textarea>
                 </div>
 
@@ -925,7 +934,7 @@ document.getElementById('studio-reset').addEventListener('click', function () {
 renderCards();
 renderSlots();
 
-/* ---------- Cart Logic & UX Qty Control ---------- */
+/* ---------- Cart Logic & Delivery Method Toggle ---------- */
 const EDITIONS = [
   { value: 'OVTH-01 (Road Edition - Sand)', label: 'OVTH-01 Road (Sand) — 590 B.' },
   { value: 'OVTH-02 (Trail Edition - Black)', label: 'OVTH-02 Trail (Black) — 590 B.' }
@@ -990,16 +999,29 @@ function renderCart() {
     updateSummary();
 }
 
-// อัปเดต Summary โดยคงข้อความเดิมของคุณเอาไว้แบบ 100%
 function updateSummary() {
     const totalQty = cart.reduce(function (s, i) { return s + i.qty; }, 0);
     const itemsTotal = totalQty * UNIT_PRICE;
-    const shipping = totalQty >= 2 ? 0 : 50;
+    
+    // ตรวจสอบวิธีรับสินค้า (ถ้านัดรับ ฟรีค่าส่ง / ถ้าจัดส่ง คิดตามเงื่อนไขเดิม)
+    const deliveryMethod = document.getElementById('delivery-method').value;
+    let shipping = 0;
+    if (deliveryMethod === 'shipping') {
+        shipping = totalQty >= 2 ? 0 : 50;
+    }
+    
     const grandTotal = itemsTotal + shipping;
+
+    let feeText = '';
+    if (deliveryMethod === 'pickup') {
+        feeText = 'free (Pickup at location)';
+    } else {
+        feeText = (shipping === 0 ? 'free shipping (2 pcs+)' : shipping + ' B.');
+    }
 
     document.getElementById('order-summary').innerHTML =
         totalQty + ' pcs × ' + UNIT_PRICE + ' B. = ' + itemsTotal + ' B.<br>' +
-        'fee: ' + (shipping === 0 ? 'free shipping (2 pcs+)' : shipping + ' B.') + '<br>' +
+        'fee: ' + feeText + '<br>' +
         '<strong>total: ' + grandTotal + ' B.</strong>';
 
     document.getElementById('itemsJson').value = JSON.stringify(cart);
@@ -1014,6 +1036,29 @@ document.getElementById('add-item-btn').addEventListener('click', function () {
     if (cart.length >= MAX_ITEMS) { alert('เพิ่มได้สูงสุด ' + MAX_ITEMS + ' รายการต่อออเดอร์ครับ'); return; }
     cart.push({ edition: EDITIONS[0].value, size: SIZES[1].value, qty: 1 });
     renderCart();
+});
+
+/* ---------- Handle Delivery Method Switch (Shipping vs Pickup) ---------- */
+const deliveryMethodSelect = document.getElementById('delivery-method');
+const addressContainer = document.getElementById('address-container');
+
+deliveryMethodSelect.addEventListener('change', function() {
+    const method = this.value;
+    if (method === 'pickup') {
+        addressContainer.innerHTML = `
+            <label for="pickup-location">Pickup Location</label>
+            <select id="pickup-location" name="address" class="custom-select" required>
+                <option value="CMU Main Stadium">CMU Main Stadium</option>
+                <option value="Basecamp Coffee">Basecamp Coffee</option>
+            </select>
+        `;
+    } else {
+        addressContainer.innerHTML = `
+            <label for="cust-address">Shipping Address</label>
+            <textarea id="cust-address" name="address" class="custom-textarea" placeholder="Full shipping address" required></textarea>
+        `;
+    }
+    updateSummary();
 });
 
 renderCart();
@@ -1086,7 +1131,9 @@ iframe.addEventListener('load', function() {
         btnText.textContent = 'Confirm Order';
         
         document.getElementById('order-form').reset();
-        slipPreviewBox.classList.remove('active'); // ล้างรูปพรีวิวออกหลังส่งข้อมูลสำเร็จ
+        slipPreviewBox.classList.remove('active');
+        deliveryMethodSelect.value = 'shipping';
+        deliveryMethodSelect.dispatchEvent(new Event('change'));
         cart = [{ edition: EDITIONS[0].value, size: SIZES[1].value, qty: 1 }];
         renderCart();
         orderForm.classList.remove('is-active');
