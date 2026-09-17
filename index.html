@@ -1,1190 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OVERTHILL — GOODS</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0a0a0c;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --accent: #d6cbb8;
-            --text-main: #f4f4f0;
-            --text-muted: #71717a;
-            --glow: rgba(214, 203, 184, 0.15);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0c">
+<title>OVERTHILL — GOODS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 40px 20px;
-            background-image:
-                radial-gradient(circle at 50% 0%, rgba(214, 203, 184, 0.08) 0%, transparent 70%),
-                radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
-        }
-
-        .wrapper {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        header { text-align: center; padding: 20px 0 10px; }
-
-        .badge {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--accent);
-            border: 1px solid rgba(214, 203, 184, 0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-bottom: 16px;
-            background: rgba(214, 203, 184, 0.05);
-        }
-
-        .logo-title {
-            font-size: 3rem;
-            font-weight: 700;
-            letter-spacing: -2px;
-            text-transform: lowercase;
-            font-style: italic;
-            background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1;
-        }
-
-        .slogan {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 8px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .manifesto-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .manifesto-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-        }
-
-        .manifesto-card p { font-size: 1.1rem; font-weight: 600; }
-        .manifesto-card span { color: var(--accent); font-style: italic; }
-
-        .section-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: -12px;
-            margin-left: 4px;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .product-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        .preview-box {
-            width: 100%;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            border-radius: 8px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            background: transparent;
-            display: flex;
-            gap: 6px;
-        }
-
-        .img-side {
-            flex: 1;
-            aspect-ratio: 1 / 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #1c1b18;
-            border-radius: 6px;
-            outline: 1px solid transparent;
-            transition: outline-color 0.2s ease;
-            overflow: hidden;
-        }
-
-        .img-side.dark { background: #141416; }
-        .img-side:hover, .img-side:focus-visible { outline-color: rgba(214, 203, 184, 0.5); }
-
-        .zoom-hint {
-            position: absolute;
-            top: 4px; right: 4px;
-            font-size: 0.9rem;
-            line-height: 1;
-            opacity: 0.6;
-        }
-
-        .side-label {
-            position: absolute;
-            bottom: 4px;
-            font-size: 0.55rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            background: rgba(0,0,0,0.6);
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-
-        .img-side svg, .img-side img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            pointer-events: none;
-        }
-
-        .product-card:hover .preview-box,
-        .product-card.is-open .preview-box {
-            max-height: 300px;
-            opacity: 1;
-            margin: 6px 0;
-        }
-
-        .product-card:hover, .product-card.is-open {
-            border-color: rgba(214, 203, 184, 0.5);
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .product-header { display: flex; justify-content: space-between; align-items: center; }
-
-        .product-tag {
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: var(--accent);
-            text-transform: uppercase;
-        }
-
-        .hover-hint {
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            border: 1px dashed var(--card-border);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .product-name { font-size: 0.95rem; font-weight: 700; }
-        .product-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; }
-
-        /* ---------- Collapsible Order Box ---------- */
-        .order-box {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 0 20px;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .order-box.is-active {
-            padding: 20px;
-            max-height: 2800px;
-            opacity: 1;
-            border-color: rgba(214, 203, 184, 0.4);
-        }
-
-        .order-title {
-            font-size: 0.75rem;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 700;
-            text-align: left;
-        }
-
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            text-align: left;
-        }
-
-        .field-group label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .custom-input, .custom-select, .custom-textarea {
-            width: 100%;
-            height: 48px;
-            padding: 12px 14px;
-            background: #141416;
-            color: var(--text-main);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            font-size: 0.85rem;
-            outline: none;
-            transition: border-color 0.2s ease;
-        }
-
-        .custom-textarea { resize: vertical; min-height: 70px; height: auto; }
-        .custom-input:focus, .custom-select:focus, .custom-textarea:focus { border-color: var(--accent); }
-
-        /* Payment Card & Copy */
-        .payment-info-card {
-            background: rgba(214, 203, 184, 0.05);
-            border: 1px dashed rgba(214, 203, 184, 0.3);
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 0.75rem;
-            line-height: 1.6;
-            color: var(--text-main);
-            text-align: left;
-        }
-        .payment-info-card strong { color: var(--accent); }
-        .copy-acc-btn {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid var(--card-border);
-            color: var(--accent);
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            margin-left: 8px;
-            transition: all 0.2s ease;
-        }
-        .copy-acc-btn:hover { background: var(--accent); color: #000; }
-
-        /* Slip Preview */
-        .slip-upload-box {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .slip-preview-container {
-            display: none;
-            position: relative;
-            width: 100%;
-            max-height: 180px;
-            background: #141416;
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            overflow: hidden;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-        }
-        .slip-preview-container.active { display: flex; }
-        .slip-preview-img {
-            max-width: 100%;
-            max-height: 160px;
-            object-fit: contain;
-            border-radius: 6px;
-        }
-        .remove-slip-btn {
-            position: absolute;
-            top: 8px; right: 8px;
-            background: rgba(0,0,0,0.7);
-            border: 1px solid var(--card-border);
-            color: #ff5555;
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-        }
-
-        .links-group { display: flex; flex-direction: column; gap: 12px; }
-
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 24px;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-main {
-            background: var(--text-main);
-            color: #000;
-            box-shadow: 0 0 20px var(--glow);
-            width: 100%;
-        }
-        .btn-main:hover { background: var(--accent); transform: scale(1.01); }
-        .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .btn-sub {
-            background: var(--card-bg);
-            color: var(--text-main);
-            border: 1px solid var(--card-border);
-        }
-        .btn-sub:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
-
-        .arrow { font-size: 1.1rem; transition: transform 0.3s ease; }
-        .btn-toggle-order.active .arrow { transform: rotate(90deg); }
-
-        footer {
-            text-align: center;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            padding: 20px 0;
-            letter-spacing: 1px;
-        }
-
-        /* ---------- Lightbox ---------- */
-        .lightbox-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(5,5,6,0.92);
-            backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 16px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.25s ease;
-            z-index: 100;
-            padding: 24px;
-        }
-        .lightbox-overlay.active { opacity: 1; visibility: visible; }
-
-        .lightbox-frame {
-            width: min(84vw, 380px);
-            aspect-ratio: 1;
-            background: #161618;
-            border-radius: 16px;
-            border: 1px solid var(--card-border);
-            overflow: hidden;
-            transform: scale(0.96);
-            transition: transform 0.25s ease;
-        }
-        .lightbox-overlay.active .lightbox-frame { transform: scale(1); }
-        .lightbox-frame svg, .lightbox-frame img {
-            width: 100%; height: 100%; object-fit: contain;
-        }
-
-        .lightbox-caption {
-            display: flex; align-items: center; gap: 10px;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .lightbox-caption strong { color: var(--accent); }
-
-        .lightbox-close {
-            position: absolute;
-            top: 24px; right: 24px;
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            border: 1px solid var(--card-border);
-            background: rgba(255,255,255,0.05);
-            color: var(--text-main);
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .lightbox-switch { display: flex; gap: 8px; }
-        .lightbox-switch button {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--card-border);
-            background: transparent;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-        .lightbox-switch button.active { border-color: var(--accent); color: var(--accent); }
-
-        /* ---------- Studio mode ---------- */
-        .studio { display: none; }
-        body.studio-on .studio { display: block; }
-
-        .studio-panel {
-            border: 1px dashed rgba(214,203,184,0.4);
-            border-radius: 16px;
-            padding: 20px;
-            background: rgba(214,203,184,0.04);
-        }
-
-        .studio-panel h2 { font-size: 0.9rem; margin-bottom: 4px; }
-        .studio-panel .note { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
-
-        .slot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-        .slot {
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 10px;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-align: center;
-            background: rgba(0,0,0,0.25);
-        }
-        .slot.dragover { border-color: var(--accent); background: rgba(214,203,184,0.1); }
-        .slot strong { display: block; color: var(--text-main); font-size: 0.72rem; margin-bottom: 6px; }
-        .slot input[type=file] { display: none; }
-        .slot .pick {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 5px 10px;
-            border: 1px solid var(--card-border);
-            border-radius: 6px;
-            cursor: pointer;
-            color: var(--accent);
-        }
-        .slot .thumb { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; margin-bottom: 6px; }
-
-        .studio-actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
-        .studio-actions button {
-            flex: 1;
-            min-width: 120px;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid var(--card-border);
-            background: rgba(255,255,255,0.05);
-            color: var(--text-main);
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* ---------- Cart rows (Supports Edition, Color, Size) ---------- */
-        .cart-row {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-        .cart-row .cart-edition { flex: 1.6; }
-        .cart-row .cart-color { flex: 1.1; }
-        .cart-row .cart-size { flex: 1.1; }
-        
-        .qty-control {
-            display: flex;
-            align-items: center;
-            background: #141416;
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            height: 48px;
-            overflow: hidden;
-            flex: 0 0 85px;
-        }
-        .qty-btn {
-            width: 26px;
-            height: 100%;
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .qty-btn:hover { background: rgba(255,255,255,0.1); }
-        .qty-val {
-            flex: 1;
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .cart-row .cart-remove {
-            flex: 0 0 auto;
-            padding: 0 10px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #order-summary {
-            background: rgba(214, 203, 184, 0.05);
-            border: 1px dashed rgba(214, 203, 184, 0.3);
-            border-radius: 10px;
-            padding: 12px 14px;
-            font-size: 0.78rem;
-            color: var(--text-main);
-            line-height: 1.7;
-        }
-        #order-summary strong { color: var(--accent); }
-
-        @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
-    </style>
+<style>
+:root{
+  --bg:#0a0a0c;
+  --card-bg:rgba(255,255,255,.03);
+  --card-border:rgba(255,255,255,.08);
+  --accent:#d6cbb8;
+  --text-main:#f4f4f0;
+  --text-muted:#71717a;
+  --glow:rgba(214,203,184,.15);
+  --danger:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body{
+  background-color:var(--bg);color:var(--text-main);display:flex;justify-content:center;
+  min-height:100vh;padding:40px 20px;
+  background-image:radial-gradient(circle at 50% 0%,rgba(214,203,184,.08) 0%,transparent 70%),radial-gradient(circle at 50% 100%,rgba(255,255,255,.02) 0%,transparent 50%);
+}
+body.modal-open{overflow:hidden}
+.wrapper{width:100%;max-width:480px;display:flex;flex-direction:column;gap:24px}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+header{text-align:center;padding:20px 0 10px;animation:fadeInUp .6s cubic-bezier(.16,1,.3,1) both}
+.badge{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(214,203,184,.3);padding:4px 12px;border-radius:20px;margin-bottom:16px;background:rgba(214,203,184,.05)}
+.logo-title{font-size:3rem;font-weight:700;letter-spacing:-2px;text-transform:lowercase;font-style:italic;background:linear-gradient(180deg,#fff 0%,#a1a1aa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.slogan{font-size:.85rem;color:var(--text-muted);margin-top:8px;letter-spacing:.5px;text-transform:uppercase}
+.manifesto-card{background:var(--card-bg);border:1px solid var(--card-border);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:16px;padding:24px;text-align:center;position:relative;overflow:hidden;animation:fadeInUp .6s cubic-bezier(.16,1,.3,1) .1s both}
+.manifesto-card:before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.manifesto-card p{font-size:1.1rem;font-weight:600}.manifesto-card span{color:var(--accent);font-style:italic}
+.section-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:-12px;margin-left:4px;animation:fadeInUp .6s cubic-bezier(.16,1,.3,1) .2s both}
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;animation:fadeInUp .6s cubic-bezier(.16,1,.3,1) .25s both}
+.product-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.product-card:hover{border-color:rgba(214,203,184,.5);background:rgba(255,255,255,.06);transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.preview-box{width:100%;overflow:hidden;border-radius:8px;background:transparent;display:flex;gap:6px;margin:6px 0}
+.img-side{flex:1;aspect-ratio:1/1;position:relative;display:flex;align-items:center;justify-content:center;background:#1c1b18;border-radius:6px;outline:1px solid transparent;transition:outline-color .2s;overflow:hidden;cursor:pointer}
+.img-side.dark{background:#141416}.img-side:hover,.img-side:focus-visible{outline-color:rgba(214,203,184,.8)}
+.zoom-hint{position:absolute;top:4px;right:4px;font-size:.9rem;line-height:1;opacity:.6}.side-label{position:absolute;bottom:4px;font-size:.55rem;font-weight:700;letter-spacing:.5px;color:var(--text-muted);background:rgba(0,0,0,.6);padding:2px 4px;border-radius:3px}
+.img-side svg,.img-side img{width:100%;height:100%;object-fit:contain;pointer-events:none}
+.product-header{display:flex;justify-content:space-between;align-items:center}.product-tag{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase}.hover-hint{font-size:.6rem;color:var(--text-muted);border:1px dashed var(--card-border);padding:2px 6px;border-radius:4px}
+.product-name{font-size:.95rem;font-weight:700}.product-desc{font-size:.75rem;color:var(--text-muted);line-height:1.3}
+.links-group{display:flex;flex-direction:column;gap:12px;animation:fadeInUp .6s cubic-bezier(.16,1,.3,1) .35s both}
+.order-box{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:0 20px;max-height:0;opacity:0;overflow:hidden;display:flex;flex-direction:column;gap:14px;transition:all .5s cubic-bezier(.16,1,.3,1)}
+.order-box.is-active{padding:20px;max-height:3500px;opacity:1;border-color:rgba(214,203,184,.4)}
+.order-title-wrapper{display:flex;justify-content:space-between;align-items:center}.order-title{font-size:.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+#dev-fill-btn{display:none;font-size:.65rem;background:rgba(214,203,184,.1);border:1px solid var(--accent);color:var(--accent);padding:4px 8px;border-radius:6px;cursor:pointer;font-weight:600}
+#dev-fill-btn:hover{background:var(--accent);color:#000}
+.field-group{display:flex;flex-direction:column;gap:6px;text-align:left}.field-group label{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+.custom-input,.custom-select,.custom-textarea{width:100%;height:48px;padding:12px 14px;background:#141416;color:var(--text-main);border:1px solid var(--card-border);border-radius:10px;font-size:.85rem;outline:none;transition:border-color .2s}
+.custom-textarea{resize:vertical;min-height:82px;height:auto}.custom-input:focus,.custom-select:focus,.custom-textarea:focus{border-color:var(--accent)}
+.custom-input:invalid:not(:placeholder-shown){border-color:rgba(255,107,107,.6)}
+.payment-info-card{background:rgba(214,203,184,.05);border:1px dashed rgba(214,203,184,.3);border-radius:10px;padding:12px;font-size:.75rem;line-height:1.6;color:var(--text-main);text-align:left}
+.payment-info-card strong{color:var(--accent)}.copy-acc-btn{background:rgba(255,255,255,.08);border:1px solid var(--card-border);color:var(--accent);padding:2px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;margin-left:8px}
+.slip-upload-box{position:relative;display:flex;flex-direction:column;gap:8px}.slip-help{font-size:.68rem;color:var(--text-muted);line-height:1.45}
+.slip-preview-container{display:none;position:relative;width:100%;max-height:220px;background:#141416;border:1px solid var(--card-border);border-radius:10px;overflow:hidden;justify-content:center;align-items:center;padding:10px}
+.slip-preview-container.active{display:flex}.slip-preview-img{max-width:100%;max-height:200px;object-fit:contain;border-radius:6px}
+.remove-slip-btn{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.7);border:1px solid var(--card-border);color:var(--danger);width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.hp-field{position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden}
+.btn{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-radius:14px;font-weight:600;font-size:.95rem;text-decoration:none;transition:all .3s cubic-bezier(.16,1,.3,1);cursor:pointer;border:none}
+.btn-main{background:var(--text-main);color:#000;box-shadow:0 0 20px var(--glow);width:100%}.btn-main:hover{background:var(--accent);transform:scale(1.01)}.btn-main:disabled{opacity:.75;cursor:not-allowed;transform:none}
+.btn-sub{background:var(--card-bg);color:var(--text-main);border:1px solid var(--card-border)}.btn-sub:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+.arrow{font-size:1.1rem;transition:transform .3s}.btn-toggle-order.active .arrow{transform:rotate(90deg)}
+footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0;letter-spacing:1px;animation:fadeInUp .6s cubic-bezier(.16,1,.3,1) .45s both}
+.btn-loading-content{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;overflow:hidden;position:relative}.pixel-runner{width:28px;height:28px;image-rendering:pixelated;animation:runForward .8s infinite linear}
+@keyframes runForward{0%{transform:translateX(-15px)}50%{transform:translateX(15px) translateY(-3px)}100%{transform:translateX(-15px)}}
+.modal-overlay{position:fixed;inset:0;background:rgba(5,5,6,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .3s;z-index:200}
+.modal-overlay.active{opacity:1;visibility:visible}.modal-card{background:#141416;border:1px solid rgba(214,203,184,.3);border-radius:20px;padding:28px;width:100%;max-width:360px;text-align:center;display:flex;flex-direction:column;gap:16px;box-shadow:0 20px 40px rgba(0,0,0,.8);transform:scale(.95);transition:transform .3s}
+.modal-overlay.active .modal-card{transform:scale(1)}.story-modal-card{max-width:440px;max-height:85vh;text-align:left;overflow-y:auto;gap:20px;padding:24px}
+.story-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--card-border);padding-bottom:12px}.story-title{font-size:.9rem;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;font-weight:700}.story-close{background:transparent;border:none;color:var(--text-muted);font-size:1.1rem;cursor:pointer}
+.story-section{display:flex;flex-direction:column;gap:8px}.story-section h3{font-size:.85rem;color:var(--text-main);text-transform:uppercase;letter-spacing:1px}.story-section p{font-size:.78rem;color:var(--text-muted);line-height:1.6}.story-section span{color:var(--accent)}
+.philosophy-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:4px}.philosophy-item{background:rgba(255,255,255,.02);border:1px solid var(--card-border);border-radius:10px;padding:12px}.philosophy-item strong{color:var(--accent);font-size:.78rem;display:block;margin-bottom:2px;text-transform:uppercase}
+.modal-logo{width:120px;height:auto;margin:0 auto;display:block;object-fit:contain}.modal-title{font-size:1.1rem;font-weight:700;color:var(--text-main);text-transform:uppercase;letter-spacing:1px}.modal-desc{font-size:.82rem;color:var(--text-muted);line-height:1.5}
+.lightbox-overlay{position:fixed;inset:0;background:rgba(5,5,6,.94);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;opacity:0;visibility:hidden;transition:opacity .25s;z-index:100;padding:24px}.lightbox-overlay.active{opacity:1;visibility:visible}
+.lightbox-frame{width:min(84vw,380px);aspect-ratio:1;background:#161618;border-radius:16px;border:1px solid var(--card-border);overflow:hidden;transform:scale(.96);transition:transform .25s}.lightbox-overlay.active .lightbox-frame{transform:scale(1)}.lightbox-frame svg,.lightbox-frame img{width:100%;height:100%;object-fit:contain}
+.lightbox-caption{display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:.75rem;letter-spacing:1px;text-transform:uppercase}.lightbox-caption strong{color:var(--accent)}
+.lightbox-close{position:absolute;top:24px;right:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--text-main);font-size:1rem;cursor:pointer}.lightbox-switch{display:flex;gap:8px}.lightbox-switch button{font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:20px;border:1px solid var(--card-border);background:transparent;color:var(--text-muted);cursor:pointer}.lightbox-switch button.active{border-color:var(--accent);color:var(--accent)}
+.studio{display:none}body.studio-on .studio{display:block}.studio-panel{border:1px dashed rgba(214,203,184,.4);border-radius:16px;padding:20px;background:rgba(214,203,184,.04)}
+.studio-panel h2{font-size:.9rem;margin-bottom:4px}.studio-panel .note{font-size:.72rem;color:var(--text-muted);line-height:1.5;margin-bottom:16px}.slot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.slot{border:1px solid var(--card-border);border-radius:10px;padding:10px;font-size:.7rem;color:var(--text-muted);text-align:center;background:rgba(0,0,0,.25)}.slot.dragover{border-color:var(--accent);background:rgba(214,203,184,.1)}.slot strong{display:block;color:var(--text-main);font-size:.72rem;margin-bottom:6px}.slot input[type=file]{display:none}.slot .pick{display:inline-block;margin-top:8px;padding:5px 10px;border:1px solid var(--card-border);border-radius:6px;cursor:pointer;color:var(--accent)}.slot .thumb{width:100%;height:70px;object-fit:cover;border-radius:6px;margin-bottom:6px}.studio-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}.studio-actions button{flex:1;min-width:120px;padding:10px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--text-main);font-size:.75rem;font-weight:600;cursor:pointer}
+.cart-row{display:grid;grid-template-columns:1.7fr 1fr 1fr 82px auto;gap:4px;margin-bottom:8px;align-items:center}.cart-row .custom-select{min-width:0;padding-left:9px;padding-right:22px;font-size:.72rem}.qty-control{display:flex;align-items:center;background:#141416;border:1px solid var(--card-border);border-radius:10px;height:48px;overflow:hidden}.qty-btn{width:25px;height:100%;background:transparent;border:none;color:var(--text-main);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}.qty-btn:hover{background:rgba(255,255,255,.1)}.qty-val{flex:1;text-align:center;font-size:.8rem;font-weight:600}.cart-remove{padding:0 10px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+#order-summary{background:rgba(214,203,184,.05);border:1px dashed rgba(214,203,184,.3);border-radius:10px;padding:12px 14px;font-size:.78rem;color:var(--text-main);line-height:1.7}#order-summary strong{color:var(--accent)}.summary-line{display:flex;justify-content:space-between;gap:12px}.summary-items{color:var(--text-muted);font-size:.72rem;margin-top:4px}
+.form-error{display:none;color:var(--danger);font-size:.72rem;line-height:1.45;padding:10px;border:1px solid rgba(255,107,107,.25);background:rgba(255,107,107,.05);border-radius:8px}.form-error.active{display:block}
+@media(max-width:430px){body{padding:25px 12px}.wrapper{gap:20px}.logo-title{font-size:2.6rem}.product-card{padding:12px}.cart-row{grid-template-columns:1.55fr 1fr 1fr 78px auto}.cart-row .custom-select{font-size:.66rem}.cart-remove{padding:0 8px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
+
 <body>
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
-    <!-- Hidden Iframe สำหรับรับ Response ทะลุปัญหา CORS -->
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+<div class="wrapper">
+<header>
+  <div class="badge">First Drop / Prototype Phase</div>
+  <h1 class="logo-title">overthill</h1>
+  <p class="slogan">Where trail runs and runs meet vibes</p>
+</header>
 
-    <div class="wrapper">
-        <header>
-            <div class="badge">First Drop / Prototype Phase</div>
-            <h1 class="logo-title">overthill</h1>
-            <p class="slogan">Where trail runs meet chill vibes</p>
-        </header>
+<div class="manifesto-card"><p>"to everyone who <span>run ran run</span> !"</p></div>
 
-        <div class="manifesto-card">
-            <p>"to everyone who <span>run ran run</span> !"</p>
-        </div>
+<span class="section-label">Current Lineup — tap a photo to enlarge</span>
+<div class="product-grid" id="product-grid"></div>
 
-        <span class="section-label">Current Lineup — tap a card to preview, tap a photo to enlarge</span>
-        <div class="product-grid" id="product-grid"></div>
+<div class="studio">
+  <div class="studio-panel">
+    <h2>Studio — swap product photos</h2>
+    <p class="note">Drop a photo on a slot, or tap Choose file. Photos are saved in this browser only. To publish, put the files in the img folder next to this page and update the PRODUCTS block.</p>
+    <div class="slot-grid" id="slot-grid"></div>
+    <div class="studio-actions">
+      <button type="button" id="studio-copy">Copy the config for these photos</button>
+      <button type="button" id="studio-reset">Clear local photos</button>
+    </div>
+  </div>
+</div>
 
-        <!-- Studio panel -->
-        <div class="studio">
-            <div class="studio-panel">
-                <h2>Studio — swap product photos</h2>
-                <p class="note">
-                    Drop a photo on a slot, or tap Choose file. Photos are saved in this browser only,
-                    so use this to check a shot before you commit to it. To publish, put the files in the
-                    img folder next to this page and fill in the PRODUCTS block at the top of the script.
-                </p>
-                <div class="slot-grid" id="slot-grid"></div>
-                <div class="studio-actions">
-                    <button id="studio-copy">Copy the config for these photos</button>
-                    <button id="studio-reset">Clear local photos</button>
-                </div>
-            </div>
-        </div>
+<div class="links-group">
+  <button type="button" id="btn-toggle-order" class="btn btn-main btn-toggle-order">
+    <span>Pre-Order Drop 01</span><span class="arrow">→</span>
+  </button>
 
-        <div class="links-group">
-            <button type="button" id="btn-toggle-order" class="btn btn-main btn-toggle-order">
-                <span>Pre-Order Drop 01</span>
-                <span class="arrow">→</span>
-            </button>
+  <form id="order-form" class="order-box" method="POST" target="hidden_iframe"
+        action="https://script.google.com/macros/s/AKfycbxJaSUtMaQC-Xrema7yiTpsYUdOGMhEBJPAUrE5xz3q9V34LfoFp5tMgE2Ht6O32A60/exec"
+        novalidate>
+  
+    <div class="order-title-wrapper">
+      <span class="order-title">Build Your Order</span>
+      <button type="button" id="dev-fill-btn">⚡ Auto-Fill Test</button>
+    </div>  
 
-            <!-- Order Form Card -->
-            <form id="order-form" class="order-box" method="POST" target="hidden_iframe" action="https://script.google.com/macros/s/AKfycbzDtGvXYytjwkOge3LbCEfEyqrTqFw-d3Wh_ZiF-zyCGznnsgcaTHcLtWuCr61neGd1Zg/exec">
-                <span class="order-title">Build Your Order</span>
-
-                <div class="field-group">
-                    <label>Order Items</label>
-                    <div id="cart-list"></div>
-                    <button type="button" id="add-item-btn" class="btn-sub" style="padding:10px 14px; justify-content:center; height:48px;">+ Add Item</button>
-                </div>
-
-                <div class="field-group">
-                    <label>Order Summary</label>
-                    <div id="order-summary"></div>
-                </div>
-
-                <div class="field-group">
-                    <label for="cust-name">Name</label>
-                    <input type="text" id="cust-name" name="name" class="custom-input" placeholder="Your Name" required>
-                </div>
-
-                <div class="field-group">
-                    <label for="cust-phone">Phone Number</label>
-                    <input type="tel" id="cust-phone" name="phone" class="custom-input" placeholder="08X-XXX-XXXX" required>
-                </div>
-
-                <div class="field-group">
-                    <label for="cust-email">E-Mail</label>
-                    <input type="email" id="cust-email" name="email" class="custom-input" placeholder="overthill_goods@gmail.com" required>
-                </div>
-
-                <!-- Delivery Method Selector (Shipping vs Pickup) -->
-                <div class="field-group">
-                    <label for="delivery-method">Delivery Method</label>
-                    <select id="delivery-method" name="deliveryMethod" class="custom-select">
-                        <option value="shipping">shipping +50 B. (2pcs+ free)</option>
-                        <option value="pickup">meet up</option>
-                    </select>
-                </div>
-
-                <!-- Shipping Address / Pickup Location Container -->
-                <div class="field-group" id="address-container">
-                    <label for="cust-address" id="address-label">Shipping Address</label>
-                    <textarea id="cust-address" name="address" class="custom-textarea" placeholder="Full shipping address" required></textarea>
-                </div>
-
-                <div class="payment-info-card">
-                    <strong>Payment Account: (K-Bank)<br>
-                    Account no : <strong>057-1-61082-5</strong> <button type="button" class="copy-acc-btn" id="copy-btn">Copy</button><br>
-                    Account Name : <strong>OVERTHILL_GOODS</strong></strong><br>
-                </div>
-
-                <div class="field-group slip-upload-box">
-                    <label for="cust-slip">Upload Payment Slip</label>
-                    <input type="file" id="cust-slip" class="custom-input" accept="image/*" style="line-height:24px;" required>
-                    
-                    <div class="slip-preview-container" id="slip-preview-box">
-                        <img id="slip-preview-img" class="slip-preview-img" src="" alt="Slip Preview">
-                        <button type="button" class="remove-slip-btn" id="remove-slip-btn">✕</button>
-                    </div>
-                </div>
-
-                <!-- Hidden inputs: cart & totals -->
-                <input type="hidden" name="itemsJson" id="itemsJson">
-                <input type="hidden" name="itemsSummary" id="itemsSummary">
-                <input type="hidden" name="shippingFee" id="shippingFee">
-                <input type="hidden" name="grandTotal" id="grandTotal">
-
-                <!-- Hidden inputs สำหรับส่งข้อมูลภาพสลิป -->
-                <input type="hidden" name="slipData" id="slipData">
-                <input type="hidden" name="slipName" id="slipName">
-                <input type="hidden" name="slipType" id="slipType">
-
-                <button type="submit" id="btn-submit-order" class="btn btn-main" style="margin-top: 6px;">
-                    <span id="btn-text">Confirm Order</span>
-                    <span class="arrow">→</span>
-                </button>
-            </form>
-
-            <a href="https://instagram.com/overthill_goods" target="_blank" class="btn btn-sub">
-                <span>Instagram @overthill_goods</span>
-                <span class="arrow">↗</span>
-            </a>
-            <a href="#" class="btn btn-sub">
-                <span>Brand Story & Lookbook</span>
-                <span class="arrow">→</span>
-            </a>
-        </div>
-
-        <footer>© OVERTHILL GOODS — CHIANG MAI</footer>
+    <div class="hp-field" aria-hidden="true">
+      <label for="website">Leave this field empty</label>
+      <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
     </div>
 
-    <div class="lightbox-overlay" id="lightbox">
-        <button class="lightbox-close" aria-label="Close">✕</button>
-        <div class="lightbox-frame" id="lightbox-frame"></div>
-        <div class="lightbox-caption">
-            <strong id="lightbox-name"></strong>
-            <div class="lightbox-switch" id="lightbox-switch">
-                <button data-view="front">Front</button>
-                <button data-view="back">Back</button>
-            </div>
-        </div>
+    <div class="field-group">
+      <label>Order Items</label>
+      <div id="cart-list"></div>
+      <button type="button" id="add-item-btn" class="btn-sub" style="padding:10px 14px;justify-content:center;height:48px">+ Add Item</button>
     </div>
+
+    <div class="field-group">
+      <label>Order Summary</label>
+      <div id="order-summary"></div>
+    </div>
+
+    <div class="field-group">
+      <label for="cust-name">Name</label>
+      <input type="text" id="cust-name" name="name" class="custom-input" placeholder="Your Name" autocomplete="name" maxlength="100" required>
+    </div>
+
+    <div class="field-group">
+      <label for="cust-phone">Phone Number</label>
+      <input type="tel" id="cust-phone" name="phone" class="custom-input" placeholder="08X-XXX-XXXX" autocomplete="tel" inputmode="tel" maxlength="12" required>
+    </div>
+
+    <div class="field-group">
+      <label for="cust-email">E-Mail</label>
+      <input type="email" id="cust-email" name="email" class="custom-input" placeholder="your@email.com" autocomplete="email" maxlength="150" required>
+    </div>
+
+    <div class="field-group">
+      <label for="delivery-method">Delivery Method</label>
+      <select id="delivery-method" name="deliveryMethod" class="custom-select" required>
+        <option value="shipping">Shipping +50 B. (2 pcs+ free)</option>
+        <option value="pickup">Meet up — Free</option>
+      </select>
+    </div>
+
+    <div class="field-group" id="address-container">
+      <label for="cust-address">Shipping Address</label>
+      <textarea id="cust-address" name="address" class="custom-textarea" placeholder="Full shipping address" autocomplete="street-address" maxlength="500" required></textarea>
+    </div>
+
+    <div class="payment-info-card">
+      <strong>Payment Account: (K-Bank)</strong><br>
+      Account no : <strong>057-1-61082-5</strong>
+      <button type="button" class="copy-acc-btn" id="copy-btn">Copy</button><br>
+      Account Name : <strong>OVERTHILL_GOODS</strong>
+    </div>
+
+    <div class="field-group slip-upload-box">
+      <label for="cust-slip">Upload Payment Slip</label>
+      <input type="file" id="cust-slip" class="custom-input" accept="image/jpeg,image/png,image/webp" style="line-height:24px" required>
+      <div class="slip-help">Image only. The page will resize/compress the slip before sending. Recommended: clear screenshot/photo, under 2 MB after compression.</div>
+      <div class="slip-preview-container" id="slip-preview-box">
+        <img id="slip-preview-img" class="slip-preview-img" src="" alt="Payment slip preview">
+        <button type="button" class="remove-slip-btn" id="remove-slip-btn" aria-label="Remove slip">✕</button>
+      </div>
+    </div>
+
+    <div class="form-error" id="form-error" role="alert"></div>
+
+    <!-- These are retained for compatibility / display, but the backend recalculates them. -->
+    <input type="hidden" name="itemsJson" id="itemsJson">
+    <input type="hidden" name="itemsSummary" id="itemsSummary">
+    <input type="hidden" name="appToken" value="OVTH_SECURE_KEY_2026_X9pQ">
+    <input type="hidden" name="shippingFee" id="shippingFee">
+    <input type="hidden" name="grandTotal" id="grandTotal">
+    <input type="hidden" name="isTestOrder" id="isTestOrder" value="0">
+    <input type="hidden" name="slipData" id="slipData">
+    <input type="hidden" name="slipName" id="slipName">
+    <input type="hidden" name="slipType" id="slipType">
+
+    <button type="submit" id="btn-submit-order" class="btn btn-main" style="margin-top:6px">
+      <span id="btn-text" style="display:flex;align-items:center;justify-content:space-between;width:100%">
+        <span>Confirm Order</span><span class="arrow">→</span>
+      </span>
+    </button>
+  </form>
+
+  <a href="https://instagram.com/overthill_goods" target="_blank" rel="noopener noreferrer" class="btn btn-sub">
+    <span>Instagram @overthill_goods</span><span class="arrow">↗</span>
+  </a>
+
+  <button type="button" id="btn-open-story" class="btn btn-sub" style="justify-content:space-between;width:100%">
+    <span>Brand Story & Lookbook</span><span class="arrow">→</span>
+  </button>
+</div>
+
+<footer>© OVERTHILL GOODS — CHIANG MAI</footer>
+</div>
+
+<div class="modal-overlay" id="story-modal">
+  <div class="modal-card story-modal-card">
+    <div class="story-header"><span class="story-title">Brand Story & Concept</span><button type="button" class="story-close" id="story-close-btn">✕</button></div>
+    <div class="story-section"><h3>The Name & Origin</h3><p>Derived from <span>"Over the Hill"</span> by Ginger Root, combined with the vintage, artistic vibes of Zhongshan second-hand shops in Taiwan.</p></div>
+    <div class="story-section"><h3>Concept</h3><p>We are building a <span>"Street Running Lifestyle"</span> brand. It's not just a technical sports shirt; it's an aesthetic piece you can wear for a long run, and seamlessly wear to a cafe afterwards.</p></div>
+    <div class="story-section"><h3>The Philosophy: "Run Ran Run"</h3>
+      <div class="philosophy-grid">
+        <div class="philosophy-item"><strong>RUN (Present / Future)</strong><p>People who are actively running, or getting inspired to start. Welcoming newcomers to the community.</p></div>
+        <div class="philosophy-item"><strong>RAN (Past / Experience)</strong><p>Giving respect to those who have logged the miles, or even those resting from injuries.</p></div>
+        <div class="philosophy-item"><strong>RUN (The Cycle)</strong><p>The never-ending cycle of the sport. An endless loop of returning to the pavement or trail.</p></div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-main" id="story-ok-btn" style="justify-content:center;padding:12px;margin-top:4px">Got It</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="success-modal">
+  <div class="modal-card">
+    <img src="img/logo.svg" alt="OVERTHILL Logo" class="modal-logo">
+    <div class="modal-title" id="success-title">Order Submitted!</div>
+    <div class="modal-desc" id="modal-desc-text">Your order has been sent. Please keep your Order ID from the confirmation email.</div>
+    <button type="button" class="btn btn-main" id="modal-close-btn" style="justify-content:center;padding:12px;margin-top:4px">Got it</button>
+  </div>
+</div>
+
+<div class="lightbox-overlay" id="lightbox">
+  <button class="lightbox-close" aria-label="Close">✕</button>
+  <div class="lightbox-frame" id="lightbox-frame"></div>
+  <div class="lightbox-caption">
+    <strong id="lightbox-name"></strong>
+    <div class="lightbox-switch" id="lightbox-switch"><button type="button" data-view="front">Front</button><button type="button" data-view="back">Back</button></div>
+  </div>
+</div>
 
 <script>
+'use strict';
+
+/* ============================================================
+   OVERTHILL FRONTEND CONFIG
+   ============================================================ */
 const PRODUCTS = {
-    road: {
-        tag: 'Road Edition',
-        code: 'OVTH-01',
-        desc: '"this shirt was made to ran"<br>center-back reflective',
-        dark: false,
-        frontImg: 'img/OVTH-01-FRONT.SVG',
-        backImg:  'img/OVTH-01-BACK.SVG'
-    },
-    trail: {
-        tag: 'Trail Edition',
-        code: 'OVTH-02',
-        desc: '"this shirt was made to trail"<br>lower-back / vest ready',
-        dark: true,
-        frontImg: 'img/OVTH-02-FRONT.SVG',
-        backImg:  'img/OVTH-02-BACK.SVG'
-    }
+  road: {
+    tag:'Road Edition',
+    code:'OVTH-01',
+    desc:'"this shirt was made to ran"<br>center-back reflective',
+    dark:false,
+    frontImg:'img/OVTH-01-FRONT.SVG',
+    backImg:'img/OVTH-01-BACK.SVG'
+  },
+  trail: {
+    tag:'Trail Edition',
+    code:'OVTH-02',
+    desc:'"this shirt was made to trail"<br>lower-back / vest ready',
+    dark:true,
+    frontImg:'img/OVTH-02-FRONT.SVG',
+    backImg:'img/OVTH-02-BACK.SVG'
+  }
 };
 
 const MOCKUP = {
-    road: {
-        front: `<svg viewBox="0 0 100 100" fill="none">
-            <path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#d6cbb8"/>
-            <ellipse cx="50" cy="38" rx="10" ry="5" fill="#121212"/>
-            <text x="50" y="40" font-size="3.5" font-weight="bold" fill="#fff" text-anchor="middle">OVTH</text>
-        </svg>`,
-        back: `<svg viewBox="0 0 100 100" fill="none">
-            <path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#d6cbb8"/>
-            <text x="50" y="55" font-size="3.2" font-weight="bold" fill="#222" text-anchor="middle">this shirt was made to ran</text>
-        </svg>`
-    },
-    trail: {
-        front: `<svg viewBox="0 0 100 100" fill="none">
-            <path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#222225"/>
-            <ellipse cx="50" cy="38" rx="10" ry="5" fill="#000" stroke="#444" stroke-width="0.5"/>
-            <text x="50" y="40" font-size="3.5" font-weight="bold" fill="#d6cbb8" text-anchor="middle">OVTH</text>
-        </svg>`,
-        back: `<svg viewBox="0 0 100 100" fill="none">
-            <path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#222225"/>
-            <text x="50" y="78" font-size="3" font-weight="bold" fill="#d6cbb8" text-anchor="middle">this shirt was made to trail</text>
-        </svg>`
-    }
+  road:{
+    front:`<svg viewBox="0 0 100 100" fill="none"><path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#d6cbb8"/><ellipse cx="50" cy="38" rx="10" ry="5" fill="#121212"/><text x="50" y="40" font-size="3.5" font-weight="bold" fill="#fff" text-anchor="middle">OVTH</text></svg>`,
+    back:`<svg viewBox="0 0 100 100" fill="none"><path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#d6cbb8"/><text x="50" y="55" font-size="3.2" font-weight="bold" fill="#222" text-anchor="middle">this shirt was made to ran</text></svg>`
+  },
+  trail:{
+    front:`<svg viewBox="0 0 100 100" fill="none"><path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#222225"/><ellipse cx="50" cy="38" rx="10" ry="5" fill="#000" stroke="#444" stroke-width=".5"/><text x="50" y="40" font-size="3.5" font-weight="bold" fill="#d6cbb8" text-anchor="middle">OVTH</text></svg>`,
+    back:`<svg viewBox="0 0 100 100" fill="none"><path d="M25 20 Q50 28 75 20 L90 32 L80 42 L80 90 L20 90 L20 42 L10 32 Z" fill="#222225"/><text x="50" y="78" font-size="3" font-weight="bold" fill="#d6cbb8" text-anchor="middle">this shirt was made to trail</text></svg>`
+  }
 };
 
-const STORAGE_KEY = 'overthill_local_photos';
-let localPhotos = {};
-try { localPhotos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { localPhotos = {}; }
+const UNIT_PRICE = 590;
+const MAX_CART_ROWS = 6;
+const MAX_QTY_PER_ROW = 20;
+const MAX_TOTAL_QTY = 100;
+const FREE_SHIPPING_MIN_QTY = 2;
+const SHIPPING_FEE = 50;
+const MAX_SLIP_INPUT_BYTES = 10 * 1024 * 1024;
+const MAX_SLIP_OUTPUT_BYTES = 2 * 1024 * 1024;
+const TEST_MODE = new URLSearchParams(location.search).get('edit') === '1';
 
-function artFor(key, view) {
-    const slot = key + ':' + view;
-    if (localPhotos[slot]) return '<img src="' + localPhotos[slot] + '" alt="' + PRODUCTS[key].code + ' ' + view + '">';
-    const path = view === 'front' ? PRODUCTS[key].frontImg : PRODUCTS[key].backImg;
-    if (path) return '<img src="' + path + '" alt="' + PRODUCTS[key].code + ' ' + view + '">';
-    return MOCKUP[key][view];
-}
-
-function renderCards() {
-    const grid = document.getElementById('product-grid');
-    grid.innerHTML = Object.entries(PRODUCTS).map(function ([key, p]) {
-        const sideClass = p.dark ? 'img-side dark' : 'img-side';
-        const side = function (view) {
-            return '<div class="' + sideClass + '" data-view="' + view + '" role="button" tabindex="0" ' +
-                   'aria-label="Enlarge ' + view + ' view of ' + p.code + '">' +
-                   artFor(key, view) +
-                   '<span class="zoom-hint">⤢</span>' +
-                   '<span class="side-label">' + view.toUpperCase() + '</span></div>';
-        };
-        return '<div class="product-card" data-product="' + key + '">' +
-               '<div class="product-header"><span class="product-tag">' + p.tag + '</span>' +
-               '<span class="hover-hint">' + p.code + '</span></div>' +
-               '<div class="product-name">' + p.code + '</div>' +
-               '<div class="preview-box">' + side('front') + side('back') + '</div>' +
-               '<div class="product-desc">' + p.desc + '</div></div>';
-    }).join('');
-    bindCards();
-}
-
-/* ---------- Lightbox ---------- */
-const overlay = document.getElementById('lightbox');
-const frame = document.getElementById('lightbox-frame');
-const nameEl = document.getElementById('lightbox-name');
-const switchEl = document.getElementById('lightbox-switch');
-let current = { product: null, view: 'front' };
-
-function renderLightbox() {
-    const p = PRODUCTS[current.product];
-    frame.innerHTML = artFor(current.product, current.view);
-    nameEl.textContent = p.code + ' — ' + p.tag;
-    switchEl.querySelectorAll('button').forEach(function (b) {
-        b.classList.toggle('active', b.dataset.view === current.view);
-    });
-}
-
-function openLightbox(product, view) {
-    current = { product: product, view: view };
-    renderLightbox();
-    overlay.classList.add('active');
-}
-function closeLightbox() { overlay.classList.remove('active'); }
-
-function bindCards() {
-    document.querySelectorAll('.product-card').forEach(function (card) {
-        card.addEventListener('click', function (e) {
-            if (e.target.closest('.img-side')) return;
-            card.classList.toggle('is-open');
-        });
-    });
-    document.querySelectorAll('.img-side').forEach(function (side) {
-        const activate = function (e) {
-            e.stopPropagation();
-            openLightbox(side.closest('.product-card').dataset.product, side.dataset.view);
-        };
-        side.addEventListener('click', activate);
-        side.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(e); }
-        });
-    });
-}
-
-switchEl.querySelectorAll('button').forEach(function (b) {
-    b.addEventListener('click', function () { current.view = b.dataset.view; renderLightbox(); });
-});
-document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
-overlay.addEventListener('click', function (e) { if (e.target === overlay) closeLightbox(); });
-document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
-
-/* ---------- Studio mode ---------- */
-if (new URLSearchParams(location.search).get('edit') === '1') {
-    document.body.classList.add('studio-on');
-}
-
-function renderSlots() {
-    const grid = document.getElementById('slot-grid');
-    const slots = [];
-    Object.entries(PRODUCTS).forEach(function ([key, p]) {
-        ['front', 'back'].forEach(function (view) {
-            const id = key + ':' + view;
-            const saved = localPhotos[id];
-            slots.push('<div class="slot" data-slot="' + id + '">' +
-                '<strong>' + p.code + ' ' + view + '</strong>' +
-                (saved ? '<img class="thumb" src="' + saved + '" alt="">' : 'Drop a photo here') +
-                '<label class="pick">Choose file<input type="file" accept="image/*"></label></div>');
-        });
-    });
-    grid.innerHTML = slots.join('');
-    bindSlots();
-}
-
-function saveLocal() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(localPhotos)); }
-    catch (e) { alert('That photo is too large for local preview. Try an image under about 1 MB.'); }
-}
-
-function loadFile(file, slotId) {
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = function () {
-        localPhotos[slotId] = reader.result;
-        saveLocal();
-        renderCards();
-        renderSlots();
-    };
-    reader.readAsDataURL(file);
-}
-
-function bindSlots() {
-    document.querySelectorAll('.slot').forEach(function (slot) {
-        const id = slot.dataset.slot;
-        slot.querySelector('input[type=file]').addEventListener('change', function (e) {
-            loadFile(e.target.files[0], id);
-        });
-        slot.addEventListener('dragover', function (e) { e.preventDefault(); slot.classList.add('dragover'); });
-        slot.addEventListener('dragleave', function () { slot.classList.remove('dragover'); });
-        slot.addEventListener('drop', function (e) {
-            e.preventDefault();
-            slot.classList.remove('dragover');
-            loadFile(e.dataTransfer.files[0], id);
-        });
-    });
-}
-
-document.getElementById('studio-copy').addEventListener('click', function () {
-    const lines = Object.keys(PRODUCTS).map(function (key) {
-        const base = 'img/' + PRODUCTS[key].code;
-        const f = localPhotos[key + ':front'] ? base + '-FRONT.png' : PRODUCTS[key].frontImg;
-        const b = localPhotos[key + ':back'] ? base + '-BACK.png' : PRODUCTS[key].backImg;
-        return '    ' + key + ": { frontImg: '" + f + "', backImg: '" + b + "' }";
-    }).join(',\n');
-    const text = '// paste these paths into the PRODUCTS block\n' + lines;
-    navigator.clipboard.writeText(text)
-        .then(function () { alert('Copied. Save your photos under those filenames in images/.'); })
-        .catch(function () { prompt('Copy this:', text); });
-});
-
-document.getElementById('studio-reset').addEventListener('click', function () {
-    localPhotos = {};
-    localStorage.removeItem(STORAGE_KEY);
-    renderCards();
-    renderSlots();
-});
-
-renderCards();
-renderSlots();
-
-/* ---------- Cart Logic (Supports Edition, Color, Size, Qty) ---------- */
 const EDITIONS = [
-  { value: 'OVTH-01 (Road Edition)', label: 'OVTH-01 Road — 590 B.' },
-  { value: 'OVTH-02 (Trail Edition)', label: 'OVTH-02 Trail — 590 B.' }
+  {value:'OVTH-01', label:'OVTH-01 Road — 590 B.'},
+  {value:'OVTH-02', label:'OVTH-02 Trail — 590 B.'}
 ];
 const COLORS = [
-  { value: 'ดำ', label: 'ดำ (Black)' },
-  { value: 'ขาว', label: 'ขาว (White)' }
+  {value:'ดำ', label:'Black'},
+  {value:'ขาว', label:'White'}
 ];
 const SIZES = [
-  { value: 'S (Chest 38)', label: 'S (38")' },
-  { value: 'M (Chest 40)', label: 'M (40")' },
-  { value: 'L (Chest 42)', label: 'L (42")' },
-  { value: 'XL (Chest 44)', label: 'XL (44")' }
+  {value:'S', label:'S (38")'},
+  {value:'M', label:'M (40")'},
+  {value:'L', label:'L (42")'},
+  {value:'XL', label:'XL (44")'}
 ];
-const UNIT_PRICE = 590;
-const MAX_ITEMS = 6;
-let cart = [{ edition: EDITIONS[0].value, color: COLORS[0].value, size: SIZES[1].value, qty: 1 }];
 
-function renderCart() {
-    const list = document.getElementById('cart-list');
-    list.innerHTML = cart.map(function (item, i) {
-        return '<div class="cart-row">' +
-            '<select class="custom-select cart-edition" data-i="' + i + '">' +
-                EDITIONS.map(function (e) {
-                    return '<option value="' + e.value + '"' + (item.edition === e.value ? ' selected' : '') + '>' + e.label + '</option>';
-                }).join('') +
-            '</select>' +
-            '<select class="custom-select cart-color" data-i="' + i + '">' +
-                COLORS.map(function (c) {
-                    return '<option value="' + c.value + '"' + (item.color === c.value ? ' selected' : '') + '>' + c.label + '</option>';
-                }).join('') +
-            '</select>' +
-            '<select class="custom-select cart-size" data-i="' + i + '">' +
-                SIZES.map(function (s) {
-                    return '<option value="' + s.value + '"' + (item.size === s.value ? ' selected' : '') + '>' + s.label + '</option>';
-                }).join('') +
-            '</select>' +
-            '<div class="qty-control">' +
-                '<button type="button" class="qty-btn qty-minus" data-i="' + i + '">−</button>' +
-                '<span class="qty-val">' + item.qty + '</span>' +
-                '<button type="button" class="qty-btn qty-plus" data-i="' + i + '">+</button>' +
-            '</div>' +
-            (cart.length > 1 ? '<button type="button" class="btn-sub cart-remove" data-i="' + i + '">✕</button>' : '') +
-        '</div>';
+let cart = [{edition:'OVTH-01', color:'ดำ', size:'M', qty:1}];
+let localPhotos = {};
+const STORAGE_KEY = 'overthill_local_photos';
+
+try{ localPhotos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){ localPhotos = {}; }
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g, function(ch){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
+  });
+}
+
+function artFor(key, view){
+  const slot = key + ':' + view;
+  if(localPhotos[slot]) return '<img src="' + escapeHtml(localPhotos[slot]) + '" alt="' + escapeHtml(PRODUCTS[key].code + ' ' + view) + '">';
+  const path = view === 'front' ? PRODUCTS[key].frontImg : PRODUCTS[key].backImg;
+  if(path) return '<img src="' + escapeHtml(path) + '" alt="' + escapeHtml(PRODUCTS[key].code + ' ' + view) + '">';
+  return MOCKUP[key][view];
+}
+
+function renderCards(){
+  const grid = document.getElementById('product-grid');
+  grid.innerHTML = Object.entries(PRODUCTS).map(function([key,p]){
+    const sideClass = p.dark ? 'img-side dark' : 'img-side';
+    function side(view){
+      return '<div class="' + sideClass + '" data-view="' + view + '" role="button" tabindex="0" aria-label="Enlarge ' + escapeHtml(view + ' view of ' + p.code) + '">' +
+        artFor(key,view) + '<span class="zoom-hint">⤢</span><span class="side-label">' + view.toUpperCase() + '</span></div>';
+    }
+    return '<div class="product-card" data-product="' + escapeHtml(key) + '">' +
+      '<div class="product-header"><span class="product-tag">' + escapeHtml(p.tag) + '</span><span class="hover-hint">' + escapeHtml(p.code) + '</span></div>' +
+      '<div class="product-name">' + escapeHtml(p.code) + '</div>' +
+      '<div class="preview-box">' + side('front') + side('back') + '</div>' +
+      '<div class="product-desc">' + p.desc + '</div></div>';
+  }).join('');
+  bindCards();
+}
+
+const lightbox = document.getElementById('lightbox');
+const lightboxFrame = document.getElementById('lightbox-frame');
+const lightboxName = document.getElementById('lightbox-name');
+const lightboxSwitch = document.getElementById('lightbox-switch');
+let currentLightbox = {product:null, view:'front'};
+
+function renderLightbox(){
+  const p = PRODUCTS[currentLightbox.product];
+  lightboxFrame.innerHTML = artFor(currentLightbox.product,currentLightbox.view);
+  lightboxName.textContent = p.code + ' — ' + p.tag;
+  lightboxSwitch.querySelectorAll('button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.view === currentLightbox.view);
+  });
+}
+function openLightbox(product,view){
+  currentLightbox = {product,view};
+  renderLightbox();
+  openOverlay(lightbox);
+}
+function closeLightbox(){closeOverlay(lightbox)}
+function bindCards(){
+  document.querySelectorAll('.img-side').forEach(function(side){
+    function activate(e){e.stopPropagation();openLightbox(side.closest('.product-card').dataset.product,side.dataset.view)}
+    side.addEventListener('click',activate);
+    side.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();activate(e)}})
+  });
+}
+lightboxSwitch.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){currentLightbox.view=b.dataset.view;renderLightbox()})});
+document.querySelector('.lightbox-close').addEventListener('click',closeLightbox);
+lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeLightbox()});
+
+function openOverlay(el){el.classList.add('active');document.body.classList.add('modal-open')}
+function closeOverlay(el){el.classList.remove('active');if(!document.querySelector('.modal-overlay.active,.lightbox-overlay.active'))document.body.classList.remove('modal-open')}
+
+const storyModal = document.getElementById('story-modal');
+document.getElementById('btn-open-story').addEventListener('click',function(){openOverlay(storyModal)});
+document.getElementById('story-close-btn').addEventListener('click',function(){closeOverlay(storyModal)});
+document.getElementById('story-ok-btn').addEventListener('click',function(){closeOverlay(storyModal)});
+storyModal.addEventListener('click',function(e){if(e.target===storyModal)closeOverlay(storyModal)});
+
+const successModal = document.getElementById('success-modal');
+document.getElementById('modal-close-btn').addEventListener('click',function(){closeOverlay(successModal)});
+successModal.addEventListener('click',function(e){if(e.target===successModal)closeOverlay(successModal)});
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  if(lightbox.classList.contains('active')) return closeLightbox();
+  if(storyModal.classList.contains('active')) return closeOverlay(storyModal);
+  if(successModal.classList.contains('active')) return closeOverlay(successModal);
+});
+
+function renderSlots(){
+  const grid = document.getElementById('slot-grid');
+  grid.innerHTML = Object.entries(PRODUCTS).map(function([key,p]){
+    return ['front','back'].map(function(view){
+      const id=key+':'+view, saved=localPhotos[id];
+      return '<div class="slot" data-slot="' + escapeHtml(id) + '">' +
+        '<strong>' + escapeHtml(p.code + ' ' + view) + '</strong>' +
+        (saved ? '<img class="thumb" src="' + escapeHtml(saved) + '" alt="">' : 'Drop a photo here') +
+        '<label class="pick">Choose file<input type="file" accept="image/*"></label></div>';
     }).join('');
+  }).join('');
+  bindSlots();
+}
+function saveLocal(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(localPhotos))}
+  catch(e){alert('That photo is too large for local preview. Try a smaller image.')}
+}
+function loadLocalFile(file,slotId){
+  if(!file || !file.type.startsWith('image/')) return;
+  const reader=new FileReader();
+  reader.onload=function(){localPhotos[slotId]=reader.result;saveLocal();renderCards();renderSlots()};
+  reader.readAsDataURL(file);
+}
+function bindSlots(){
+  document.querySelectorAll('.slot').forEach(function(slot){
+    const id=slot.dataset.slot;
+    slot.querySelector('input[type=file]').addEventListener('change',function(e){loadLocalFile(e.target.files[0],id)});
+    slot.addEventListener('dragover',function(e){e.preventDefault();slot.classList.add('dragover')});
+    slot.addEventListener('dragleave',function(){slot.classList.remove('dragover')});
+    slot.addEventListener('drop',function(e){e.preventDefault();slot.classList.remove('dragover');loadLocalFile(e.dataTransfer.files[0],id)});
+  });
+}
+document.getElementById('studio-copy').addEventListener('click',function(){
+  const lines=Object.keys(PRODUCTS).map(function(key){
+    const base='img/'+PRODUCTS[key].code;
+    const f=localPhotos[key+':front']?base+'-FRONT.png':PRODUCTS[key].frontImg;
+    const b=localPhotos[key+':back']?base+'-BACK.png':PRODUCTS[key].backImg;
+    return '    '+key+": { frontImg: '"+f+"', backImg: '"+b+"' }";
+  }).join(',\n');
+  const text='// paste these paths into the PRODUCTS block\n'+lines;
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){alert('Copied. Save your photos under those filenames in img/.')}).catch(function(){prompt('Copy this:',text)});
+  else prompt('Copy this:',text);
+});
+document.getElementById('studio-reset').addEventListener('click',function(){localPhotos={};localStorage.removeItem(STORAGE_KEY);renderCards();renderSlots()});
 
-    list.querySelectorAll('.cart-edition').forEach(function (el) {
-        el.addEventListener('change', function () { cart[+el.dataset.i].edition = el.value; updateSummary(); });
-    });
-    list.querySelectorAll('.cart-color').forEach(function (el) {
-        el.addEventListener('change', function () { cart[+el.dataset.i].color = el.value; updateSummary(); });
-    });
-    list.querySelectorAll('.cart-size').forEach(function (el) {
-        el.addEventListener('change', function () { cart[+el.dataset.i].size = el.value; updateSummary(); });
-    });
-    list.querySelectorAll('.qty-minus').forEach(function (el) {
-        el.addEventListener('click', function () {
-            const idx = +el.dataset.i;
-            if (cart[idx].qty > 1) { cart[idx].qty--; renderCart(); }
-        });
-    });
-    list.querySelectorAll('.qty-plus').forEach(function (el) {
-        el.addEventListener('click', function () {
-            const idx = +el.dataset.i;
-            if (cart[idx].qty < 20) { cart[idx].qty++; renderCart(); }
-        });
-    });
-    list.querySelectorAll('.cart-remove').forEach(function (el) {
-        el.addEventListener('click', function () {
-            cart.splice(+el.dataset.i, 1);
-            renderCart();
-        });
-    });
-    updateSummary();
+const orderForm=document.getElementById('order-form');
+const toggleBtn=document.getElementById('btn-toggle-order');
+const addItemBtn=document.getElementById('add-item-btn');
+const deliverySelect=document.getElementById('delivery-method');
+const addressContainer=document.getElementById('address-container');
+const formError=document.getElementById('form-error');
+const submitBtn=document.getElementById('btn-submit-order');
+const btnText=document.getElementById('btn-text');
+const iframe=document.getElementById('hidden_iframe');
+const slipInput=document.getElementById('cust-slip');
+const slipPreviewBox=document.getElementById('slip-preview-box');
+const slipPreviewImg=document.getElementById('slip-preview-img');
+const isTestOrder=document.getElementById('isTestOrder');
+
+let lastShippingAddress='';
+let lastPickupLocation='CMU Main Stadium';
+let submissionInProgress=false;
+let iframeReady=false;
+
+function editionLabel(code){return code==='OVTH-01'?'OVTH-01 Road':'OVTH-02 Trail'}
+function totalQty(){return cart.reduce((sum,item)=>sum+Number(item.qty||0),0)}
+
+function renderCart(){
+  const list=document.getElementById('cart-list');
+  list.innerHTML=cart.map(function(item,i){
+    return '<div class="cart-row">' +
+      '<select class="custom-select cart-edition" data-i="'+i+'">'+EDITIONS.map(function(x){return '<option value="'+x.value+'"'+(item.edition===x.value?' selected':'')+'>'+x.label+'</option>'}).join('')+'</select>' +
+      '<select class="custom-select cart-color" data-i="'+i+'">'+COLORS.map(function(x){return '<option value="'+x.value+'"'+(item.color===x.value?' selected':'')+'>'+x.label+'</option>'}).join('')+'</select>' +
+      '<select class="custom-select cart-size" data-i="'+i+'">'+SIZES.map(function(x){return '<option value="'+x.value+'"'+(item.size===x.value?' selected':'')+'>'+x.label+'</option>'}).join('')+'</select>' +
+      '<div class="qty-control"><button type="button" class="qty-btn qty-minus" data-i="'+i+'">−</button><span class="qty-val">'+item.qty+'</span><button type="button" class="qty-btn qty-plus" data-i="'+i+'">+</button></div>' +
+      (cart.length>1?'<button type="button" class="btn-sub cart-remove" data-i="'+i+'">✕</button>':'') +
+      '</div>';
+  }).join('');
+
+  list.querySelectorAll('.cart-edition').forEach(function(el){el.addEventListener('change',function(){cart[+el.dataset.i].edition=el.value;updateSummary()})});
+  list.querySelectorAll('.cart-color').forEach(function(el){el.addEventListener('change',function(){cart[+el.dataset.i].color=el.value;updateSummary()})});
+  list.querySelectorAll('.cart-size').forEach(function(el){el.addEventListener('change',function(){cart[+el.dataset.i].size=el.value;updateSummary()})});
+  list.querySelectorAll('.qty-minus').forEach(function(el){el.addEventListener('click',function(){const i=+el.dataset.i;if(cart[i].qty>1){cart[i].qty--;renderCart()}})});
+  list.querySelectorAll('.qty-plus').forEach(function(el){el.addEventListener('click',function(){const i=+el.dataset.i;if(cart[i].qty<MAX_QTY_PER_ROW && totalQty()<MAX_TOTAL_QTY){cart[i].qty++;renderCart()}else{showError('Maximum quantity reached for this order.')}})});
+  list.querySelectorAll('.cart-remove').forEach(function(el){el.addEventListener('click',function(){cart.splice(+el.dataset.i,1);renderCart()})});
+  updateSummary();
 }
 
-function updateSummary() {
-    const totalQty = cart.reduce(function (s, i) { return s + i.qty; }, 0);
-    const itemsTotal = totalQty * UNIT_PRICE;
-    
-    const deliveryMethod = document.getElementById('delivery-method').value;
-    let shipping = 0;
-    if (deliveryMethod === 'shipping') {
-        shipping = totalQty >= 2 ? 0 : 50;
-    }
-    
-    const grandTotal = itemsTotal + shipping;
-
-    let feeText = '';
-    if (deliveryMethod === 'pickup') {
-        feeText = 'free (Pickup at location)';
-    } else {
-        feeText = (shipping === 0 ? 'free shipping (2 pcs+)' : shipping + ' B.');
-    }
-
-    document.getElementById('order-summary').innerHTML =
-        totalQty + ' pcs × ' + UNIT_PRICE + ' B. = ' + itemsTotal + ' B.<br>' +
-        'fee: ' + feeText + '<br>' +
-        '<strong>total: ' + grandTotal + ' B.</strong>';
-
-    document.getElementById('itemsJson').value = JSON.stringify(cart);
-    document.getElementById('itemsSummary').value = cart.map(function (i) {
-        return i.edition.split(' ')[0] + ' / สี' + i.color + ' / ' + i.size.split(' ')[0] + ' x' + i.qty;
-    }).join(', ');
-    document.getElementById('shippingFee').value = shipping;
-    document.getElementById('grandTotal').value = grandTotal;
+function calculateClientOrder(){
+  const qty=totalQty();
+  const itemTotal=qty*UNIT_PRICE;
+  const shipping=deliverySelect.value==='shipping'?(qty>=FREE_SHIPPING_MIN_QTY?0:SHIPPING_FEE):0;
+  return {qty,itemTotal,shipping,grandTotal:itemTotal+shipping};
 }
 
-document.getElementById('add-item-btn').addEventListener('click', function () {
-    if (cart.length >= MAX_ITEMS) { alert('เพิ่มได้สูงสุด ' + MAX_ITEMS + ' รายการต่อออเดอร์ครับ'); return; }
-    cart.push({ edition: EDITIONS[0].value, color: COLORS[0].value, size: SIZES[1].value, qty: 1 });
-    renderCart();
+function updateSummary(){
+  const calc=calculateClientOrder();
+  const summaryItems=cart.map(function(i){return editionLabel(i.edition)+' / '+i.color+' / '+i.size+' × '+i.qty}).join(' · ');
+  document.getElementById('order-summary').innerHTML =
+    '<div class="summary-line"><span>'+calc.qty+' pcs × '+UNIT_PRICE+' B.</span><strong>'+calc.itemTotal+' B.</strong></div>' +
+    '<div class="summary-items">'+escapeHtml(summaryItems)+'</div>' +
+    '<div class="summary-line"><span>'+ (deliverySelect.value==='pickup'?'Meet up':'Shipping') +'</span><span>'+ (calc.shipping===0?'FREE':calc.shipping+' B.') +'</span></div>' +
+    '<div class="summary-line"><strong>Total</strong><strong>'+calc.grandTotal+' B.</strong></div>';
+
+  document.getElementById('itemsJson').value=JSON.stringify(cart);
+  document.getElementById('itemsSummary').value=summaryItems;
+  document.getElementById('shippingFee').value=calc.shipping;
+  document.getElementById('grandTotal').value=calc.grandTotal;
+}
+
+function updateAddressField(){
+  const current=document.getElementById('cust-address')||document.getElementById('pickup-location');
+  if(current){
+    if(current.tagName==='TEXTAREA') lastShippingAddress=current.value;
+    else lastPickupLocation=current.value;
+  }
+  if(deliverySelect.value==='pickup'){
+    addressContainer.innerHTML='<label for="pickup-location">Pickup Location</label><select id="pickup-location" name="address" class="custom-select" required><option value="CMU Main Stadium">CMU Main Stadium</option><option value="Basecamp Coffee">Basecamp Coffee</option></select>';
+    document.getElementById('pickup-location').value=lastPickupLocation;
+  }else{
+    addressContainer.innerHTML='<label for="cust-address">Shipping Address</label><textarea id="cust-address" name="address" class="custom-textarea" placeholder="Full shipping address" autocomplete="street-address" maxlength="500" required></textarea>';
+    document.getElementById('cust-address').value=lastShippingAddress;
+  }
+  updateSummary();
+}
+deliverySelect.addEventListener('change',updateAddressField);
+addItemBtn.addEventListener('click',function(){
+  if(cart.length>=MAX_CART_ROWS){showError('You can add up to '+MAX_CART_ROWS+' different item rows.');return}
+  cart.push({edition:'OVTH-01',color:'ดำ',size:'M',qty:1});
+  renderCart();
+});
+toggleBtn.addEventListener('click',function(){
+  toggleBtn.classList.toggle('active');orderForm.classList.toggle('is-active');
+  if(orderForm.classList.contains('is-active')) setTimeout(function(){orderForm.scrollIntoView({behavior:'smooth',block:'nearest'})},120);
 });
 
-/* ---------- Handle Delivery Method Switch (Shipping vs Pickup) ---------- */
-const deliveryMethodSelect = document.getElementById('delivery-method');
-const addressContainer = document.getElementById('address-container');
+function showError(message){
+  formError.textContent=message;
+  formError.classList.add('active');
+  formError.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function clearError(){formError.textContent='';formError.classList.remove('active')}
 
-deliveryMethodSelect.addEventListener('change', function() {
-    const method = this.value;
-    if (method === 'pickup') {
-        addressContainer.innerHTML = `
-            <label for="pickup-location">Pickup Location</label>
-            <select id="pickup-location" name="address" class="custom-select" required>
-                <option value="CMU Main Stadium">CMU Main Stadium</option>
-                <option value="Basecamp Coffee">Basecamp Coffee</option>
-            </select>
-        `;
-    } else {
-        addressContainer.innerHTML = `
-            <label for="cust-address">Shipping Address</label>
-            <textarea id="cust-address" name="address" class="custom-textarea" placeholder="Full shipping address" required></textarea>
-        `;
+function normalizePhone(v){return String(v||'').replace(/[\s-]/g,'')}
+function validateBeforeSubmit(){
+  clearError();
+  if(!orderForm.checkValidity()){orderForm.reportValidity();return false}
+  if(!cart.length){showError('Please add at least one item.');return false}
+  if(cart.length>MAX_CART_ROWS){showError('Too many item rows.');return false}
+  if(totalQty()<1||totalQty()>MAX_TOTAL_QTY){showError('Invalid total quantity.');return false}
+  for(const item of cart){
+    if(!['OVTH-01','OVTH-02'].includes(item.edition)||!['ดำ','ขาว'].includes(item.color)||!['S','M','L','XL'].includes(item.size)||!Number.isInteger(item.qty)||item.qty<1||item.qty>MAX_QTY_PER_ROW){
+      showError('One or more cart items are invalid.');return false;
     }
-    updateSummary();
+  }
+  const phone=normalizePhone(document.getElementById('cust-phone').value);
+  if(!/^0\d{9}$/.test(phone)){showError('Please enter a valid Thai phone number, e.g. 0891234567.');return false}
+  const pickup=document.getElementById('pickup-location');
+  if(deliverySelect.value==='pickup' && pickup && !['CMU Main Stadium','Basecamp Coffee'].includes(pickup.value)){showError('Please select a valid pickup location.');return false}
+  if(deliverySelect.value==='shipping' && !String(document.getElementById('cust-address').value).trim()){showError('Please enter your shipping address.');return false}
+  const file=slipInput.files[0];
+  if(!file){showError('Please upload your payment slip.');return false}
+  if(!file.type.startsWith('image/')){showError('Payment slip must be an image.');return false}
+  if(file.size>MAX_SLIP_INPUT_BYTES){showError('The original slip is too large. Please choose an image under 10 MB.');return false}
+  return true;
+}
+
+function setSubmitting(state){
+  submissionInProgress=state;
+  submitBtn.disabled=state;
+  btnText.innerHTML=state ?
+    '<div class="btn-loading-content"><svg class="pixel-runner" viewBox="0 0 24 24"><rect x="1" y="10" width="3" height="1" fill="#d6cbb8"/><rect x="0" y="13" width="4" height="1" fill="#d6cbb8"/><rect x="1" y="16" width="2" height="1" fill="#d6cbb8"/><rect x="6" y="2" width="7" height="3" fill="#000"/><rect x="5" y="3" width="9" height="2" fill="#000"/><rect x="10" y="5" width="4" height="4" fill="#fcd34d"/><rect x="7" y="7" width="5" height="5" fill="#27272a"/><rect x="9" y="8" width="5" height="4" fill="#dc2626"/><rect x="9" y="12" width="5" height="4" fill="#2563eb"/><rect x="7" y="15" width="3" height="3" fill="#fcd34d"/><rect x="13" y="15" width="3" height="4" fill="#fcd34d"/></svg><span>Submitting...</span></div>' :
+    '<span>Confirm Order</span><span class="arrow">→</span>';
+}
+
+function blobToDataURL(blob){
+  return new Promise(function(resolve,reject){
+    const reader=new FileReader();
+    reader.onload=function(){resolve(reader.result)};
+    reader.onerror=reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+function compressSlip(file){
+  return new Promise(function(resolve,reject){
+    const reader=new FileReader();
+    reader.onerror=function(){reject(new Error('Could not read payment slip.'))};
+    reader.onload=function(){
+      const img=new Image();
+      img.onload=function(){
+        const maxDimension=1600;
+        const scale=Math.min(1,maxDimension/Math.max(img.naturalWidth,img.naturalHeight));
+        const canvas=document.createElement('canvas');
+        canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));
+        canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+        const ctx=canvas.getContext('2d',{alpha:false});
+        ctx.fillStyle='#fff';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        let quality=.82;
+        function attempt(){
+          canvas.toBlob(function(blob){
+            if(!blob){reject(new Error('Could not process payment slip.'));return}
+            if(blob.size<=MAX_SLIP_OUTPUT_BYTES||quality<=.5){
+              resolve(blob);return;
+            }
+            quality-=.08;attempt();
+          },'image/jpeg',quality);
+        }
+        attempt();
+      };
+      img.onerror=function(){reject(new Error('Invalid payment slip image.'))};
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function fallbackCopyText(text,onDone){
+  const ta=document.createElement('textarea');
+  ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy');onDone()}catch(e){prompt('Copy account number:',text)}
+  document.body.removeChild(ta);
+}
+document.getElementById('copy-btn').addEventListener('click',function(){
+  const plain='0571610825',btn=this;
+  function done(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy'},1800)}
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(plain).then(done).catch(function(){fallbackCopyText(plain,done)});
+  else fallbackCopyText(plain,done);
 });
 
+slipInput.addEventListener('change',function(){
+  clearError();
+  const file=this.files[0];
+  if(!file){return}
+  if(!file.type.startsWith('image/')){this.value='';showError('Please choose an image file.');return}
+  if(file.size>MAX_SLIP_INPUT_BYTES){this.value='';showError('The original slip is too large. Please choose an image under 10 MB.');return}
+  const reader=new FileReader();
+  reader.onload=function(e){slipPreviewImg.src=e.target.result;slipPreviewBox.classList.add('active')};
+  reader.readAsDataURL(file);
+});
+document.getElementById('remove-slip-btn').addEventListener('click',function(){
+  slipInput.value='';document.getElementById('slipData').value='';document.getElementById('slipName').value='';document.getElementById('slipType').value='';
+  slipPreviewImg.src='';slipPreviewBox.classList.remove('active');
+});
+
+orderForm.addEventListener('submit',async function(e){
+  if(submissionInProgress){e.preventDefault();return}
+  if(!validateBeforeSubmit()){e.preventDefault();return}
+
+  e.preventDefault();
+  setSubmitting(true);
+  iframeReady=false;
+
+  try{
+    const file=slipInput.files[0];
+    const compressed=await compressSlip(file);
+    const dataUrl=await blobToDataURL(compressed);
+
+    document.getElementById('itemsJson').value=JSON.stringify(cart);
+    document.getElementById('itemsSummary').value=cart.map(function(i){return editionLabel(i.edition)+' / '+i.color+' / '+i.size+' × '+i.qty}).join(' · ');
+    const calc=calculateClientOrder();
+    document.getElementById('shippingFee').value=calc.shipping;
+    document.getElementById('grandTotal').value=calc.grandTotal;
+    document.getElementById('slipData').value=dataUrl;
+    document.getElementById('slipName').value='payment-slip.jpg';
+    document.getElementById('slipType').value='image/jpeg';
+
+    /*
+     * Submit only after slip processing is complete.
+     * The backend independently recalculates price/shipping.
+     */
+    orderForm.submit();
+
+    /*
+     * Apps Script is submitted into a cross-origin iframe.
+     * We cannot read its response from this page, so the iframe
+     * load event is used as the completion signal.
+     */
+    setTimeout(function(){
+      if(submissionInProgress) completeSubmissionUI();
+    },1500);
+
+  }catch(err){
+    setSubmitting(false);
+    showError(err.message||'Could not prepare the payment slip. Please try again.');
+  }
+});
+
+function resetOrderForm(){
+  orderForm.reset();
+  clearError();
+  document.getElementById('isTestOrder').value='0';
+  document.getElementById('slipData').value='';
+  document.getElementById('slipName').value='';
+  document.getElementById('slipType').value='';
+  slipPreviewImg.src='';slipPreviewBox.classList.remove('active');
+  lastShippingAddress='';lastPickupLocation='CMU Main Stadium';
+  deliverySelect.value='shipping';
+  cart=[{edition:'OVTH-01',color:'ดำ',size:'M',qty:1}];
+  updateAddressField();renderCart();
+}
+function completeSubmissionUI(){
+  if(!submissionInProgress)return;
+  setSubmitting(false);
+  const isTest=document.getElementById('isTestOrder').value==='1';
+  document.getElementById('success-title').textContent=isTest?'Test Order Submitted!':'Order Submitted!';
+  document.getElementById('modal-desc-text').textContent=isTest ?
+    'The test order was sent to the TestOrders sheet. No customer confirmation email is sent for test orders.' :
+    'Your order has been sent. Please check your email for the confirmation and keep your Order ID.';
+  openOverlay(successModal);
+  resetOrderForm();
+  orderForm.classList.remove('is-active');toggleBtn.classList.remove('active');
+  submissionInProgress=false;
+}
+iframe.addEventListener('load',function(){
+  /*
+   * The hidden iframe may fire on initial page load in some browsers.
+   * The short delay in submit handler is the primary completion guard.
+   */
+  iframeReady=true;
+});
+
+if(TEST_MODE){
+  document.body.classList.add('studio-on');
+  document.getElementById('dev-fill-btn').style.display='inline-block';
+  isTestOrder.value='1';
+}
+document.getElementById('dev-fill-btn').addEventListener('click',function(){
+  if(!TEST_MODE)return;
+  document.getElementById('cust-name').value='Test Runner';
+  document.getElementById('cust-phone').value='0891234567';
+  document.getElementById('cust-email').value='overthill.test@gmail.com';
+  isTestOrder.value='1';
+  deliverySelect.value='pickup';
+  updateAddressField();
+
+  const canvas=document.createElement('canvas');canvas.width=600;canvas.height=800;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#d6cbb8';ctx.fillRect(0,0,600,800);
+  ctx.fillStyle='#000';ctx.font='bold 48px sans-serif';ctx.fillText('OVERTHILL',110,320);
+  ctx.font='32px sans-serif';ctx.fillText('TEST PAYMENT SLIP',105,390);
+  ctx.font='22px sans-serif';ctx.fillText(new Date().toLocaleString(),115,450);
+  canvas.toBlob(function(blob){
+    const file=new File([blob],'test_slip.jpg',{type:'image/jpeg'});
+    const dt=new DataTransfer();dt.items.add(file);slipInput.files=dt.files;
+    const reader=new FileReader();reader.onload=function(e){slipPreviewImg.src=e.target.result;slipPreviewBox.classList.add('active')};reader.readAsDataURL(file);
+  },'image/jpeg',.85);
+
+  if(!orderForm.classList.contains('is-active')){toggleBtn.classList.add('active');orderForm.classList.add('is-active')}
+  renderCart();updateSummary();
+});
+
+/* Initial render */
+renderCards();
+renderSlots();
+updateAddressField();
 renderCart();
-
-/* ---------- Copy Bank Account UX ---------- */
-document.getElementById('copy-btn').addEventListener('click', function() {
-    const accNum = "057-1-61082-5";
-    navigator.clipboard.writeText(accNum.replace(/-/g, '')).then(() => {
-        const btn = document.getElementById('copy-btn');
-        btn.textContent = 'Copied!';
-        btn.style.background = '#d6cbb8';
-        btn.style.color = '#000';
-        setTimeout(() => {
-            btn.textContent = 'Copy';
-            btn.style.background = 'rgba(255,255,255,0.08)';
-            btn.style.color = 'var(--accent)';
-        }, 2000);
-    });
-});
-
-/* ---------- Slip Upload Preview UX ---------- */
-const slipInput = document.getElementById('cust-slip');
-const slipPreviewBox = document.getElementById('slip-preview-box');
-const slipPreviewImg = document.getElementById('slip-preview-img');
-const removeSlipBtn = document.getElementById('remove-slip-btn');
-
-slipInput.addEventListener('change', function() {
-    if (this.files && this.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            slipPreviewImg.src = e.target.result;
-            slipPreviewBox.classList.add('active');
-        };
-        reader.readAsDataURL(this.files[0]);
-    }
-});
-
-removeSlipBtn.addEventListener('click', function() {
-    slipInput.value = '';
-    document.getElementById('slipData').value = '';
-    slipPreviewImg.src = '';
-    slipPreviewBox.classList.remove('active');
-});
-
-/* ---------- Toggle Form Logic ---------- */
-const toggleBtn = document.getElementById('btn-toggle-order');
-const orderForm = document.getElementById('order-form');
-
-toggleBtn.addEventListener('click', function() {
-    toggleBtn.classList.toggle('active');
-    orderForm.classList.toggle('is-active');
-    
-    if(orderForm.classList.contains('is-active')) {
-        setTimeout(() => {
-            orderForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 150);
-    }
-});
-
-/* ---------- Handle Form Submission & Slip Base64 Conversion ---------- */
-let isSubmitted = false;
-const iframe = document.getElementById('hidden_iframe');
-
-iframe.addEventListener('load', function() {
-    if (isSubmitted) {
-        alert('Your order is locked in! Confirmation email has been sent.');
-        const btn = document.getElementById('btn-submit-order');
-        const btnText = document.getElementById('btn-text');
-        btn.disabled = false;
-        btnText.textContent = 'Confirm Order';
-        
-        document.getElementById('order-form').reset();
-        slipPreviewBox.classList.remove('active');
-        deliveryMethodSelect.value = 'shipping';
-        deliveryMethodSelect.dispatchEvent(new Event('change'));
-        cart = [{ edition: EDITIONS[0].value, color: COLORS[0].value, size: SIZES[1].value, qty: 1 }];
-        renderCart();
-        orderForm.classList.remove('is-active');
-        toggleBtn.classList.remove('active');
-        isSubmitted = false;
-    }
-});
-
-document.getElementById('order-form').addEventListener('submit', function(e) {
-    const slipFileInput = document.getElementById('cust-slip');
-    
-    if (!slipFileInput.files.length) {
-        e.preventDefault();
-        alert('please upload your payment slip');
-        return;
-    }
-
-    const file = slipFileInput.files[0];
-    
-    if (!document.getElementById('slipData').value) {
-        e.preventDefault();
-        
-        const btn = document.getElementById('btn-submit-order');
-        const btnText = document.getElementById('btn-text');
-        btn.disabled = true;
-        btnText.textContent = 'Submitting...';
-
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            document.getElementById('slipData').value = evt.target.result;
-            document.getElementById('slipName').value = file.name;
-            document.getElementById('slipType').value = file.type || 'image/jpeg';
-            
-            isSubmitted = true;
-            document.getElementById('order-form').submit();
-        };
-        reader.readAsDataURL(file);
-    }
-});
 </script>
 </body>
 </html>
