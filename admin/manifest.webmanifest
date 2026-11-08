@@ -1,0 +1,17 @@
+{
+  "name": "ovth. Owner — Orders",
+  "short_name": "ovth. Owner",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "display": "standalone",
+  "background_color": "#111210",
+  "theme_color": "#111210",
+  "icons": [
+    {
+      "src": "/admin/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
